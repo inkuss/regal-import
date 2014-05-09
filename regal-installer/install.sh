@@ -41,6 +41,7 @@ substituteVars Identify.xml $ARCHIVE_HOME/conf/Identify.xml
 substituteVars proai.properties $ARCHIVE_HOME/conf/proai.properties
 substituteVars robots.txt $ARCHIVE_HOME/conf/robots.txt
 substituteVars tomcat.conf $ARCHIVE_HOME/conf/tomcat.conf
+substituteVars application.conf $ARCHIVE_HOME/conf/application.conf
 cp templates/favicon.ico $ARCHIVE_HOME/conf/favicon.ico
 }
 
@@ -58,6 +59,7 @@ sed -e "s,\$ARCHIVE_HOME,$ARCHIVE_HOME,g" \
 -e "s,\$IP,$IP,g" \
 -e "s,\$TOMCAT_PORT,$TOMCAT_PORT,g" \
 -e "s,\$EMAIL,$EMAIL,g" \
+-e "s,\$PLAYPORT,$PLAYPORT,g" \
 -e "s,\$ELASTICSEARCH_PORT,$ELASTICSEARCH_PORT,g" $file > $target
 }
 
@@ -123,7 +125,8 @@ echo "copy elasticsearch config"
 mv $ARCHIVE_HOME/elasticsearch/config/elasticsearch.yml $ARCHIVE_HOME/elasticsearch/config/elasticsearch.yml.bck
 cp $ARCHIVE_HOME/conf/elasticsearch.yml $ARCHIVE_HOME/elasticsearch/config/
 echo "install archive"
-cp  $ARCHIVE_HOME/conf/api.properties $ARCHIVE_HOME/src/regal-api/src/main/resources
+cp  $ARCHIVE_HOME/conf/api.properties $ARCHIVE_HOME/src/regal-api/conf
+cp  $ARCHIVE_HOME/conf/application.conf $ARCHIVE_HOME/src/regal-api/conf
 }
 
 function updateMaster()
@@ -220,7 +223,6 @@ export CATALINA_HOME=$FEDORA_HOME/tomcat
 function copyHtml
 {
 echo "copy html"
-cp -r $ARCHIVE_HOME/src/regal-ui/htdocs/* $ARCHIVE_HOME/html/
 cp $ARCHIVE_HOME/conf/Identify.xml $ARCHIVE_HOME/html/
 cp $ARCHIVE_HOME/conf/robots.txt $ARCHIVE_HOME/html/
 cp $ARCHIVE_HOME/conf/favicon.ico $ARCHIVE_HOME/html/
@@ -244,15 +246,10 @@ echo "Please install proai manually"
 
 function installApi
 {
-SRC=$ARCHIVE_HOME/src
-WEBAPPS=$ARCHIVE_HOME/fedora/tomcat/webapps
 cd $SRC/regal-api
-echo "Install Webapi"
-mvn war:war -DskipTests >> $ARCHIVE_HOME/logs/regal-build.log
-mvn package >> $ARCHIVE_HOME/logs/regal-build.log
+play stop
+play clean compile stage
 cd -
-rm -rf  $WEBAPPS/api*
-cp $SRC/regal-api/target/api.war $WEBAPPS/api.war
 }
 
 function shutdownTomcat
@@ -318,6 +315,7 @@ then
 	createConfig
 	install
 	copyConfig
+	configApi
 	rollout
 elif [ $# -eq 1 ]
 then

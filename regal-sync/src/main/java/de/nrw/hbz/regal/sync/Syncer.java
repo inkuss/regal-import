@@ -138,26 +138,28 @@ public class Syncer {
 
     /**
      * @param args
-     *            usage: -oai,--oai <arg> Specify the OAI-PMH endpoint -m,--mode
-     *            <arg> Specify mode: INIT: All PIDs will be downloaded. All
-     *            pids will be updated or created. SYNC: Modified or new PIDs
-     *            will be downloaded and updated or created CONT: All PIDs that
-     *            aren't already downloaded will be downloaded and created or
-     *            updated UPDT: In accordance to the timestamp all modified PIDs
-     *            will be reingestedPIDL: Use this mode in combination with
-     *            -list to provide a file with a newline separated pidlistMODL:
-     *            Recreates only the Content modelDELE: Use this mode in
-     *            combination with -list to provide a file with a newline
-     *            separated pidlist -?,--help Print usage information
-     *            -cache,--cache <arg> Specify local directory -dtl,--dtl <arg>
-     *            Specify digitool url -fedoraBase,--fedoraBase <arg> The Fedora
-     *            Baseurl -host,--host <arg> The Fedora Baseurl -list,--list
-     *            <arg> Path to a file with a newline separated pidlist. Only
-     *            needed in combination with mode PIDL and DELE.
-     *            -namespace,--namespace <arg> The namespace to operate on.
-     *            -p,--password <arg> Specify password -set,--set <arg> Specify
-     *            an OAI setSpec -timestamp,--timestamp <arg> Specify a local
-     *            file e.g. .oaitimestamp -u,--user <arg> Specify username
+     *            usage: -oai,--oai &lt;arg&gt; Specify the OAI-PMH endpoint
+     *            -m,--mode &lt;arg&gt; Specify mode: INIT: All PIDs will be
+     *            downloaded. All pids will be updated or created. SYNC:
+     *            Modified or new PIDs will be downloaded and updated or created
+     *            CONT: All PIDs that aren't already downloaded will be
+     *            downloaded and created or updated UPDT: In accordance to the
+     *            timestamp all modified PIDs will be reingestedPIDL: Use this
+     *            mode in combination with -list to provide a file with a
+     *            newline separated pidlistMODL: Recreates only the Content
+     *            modelDELE: Use this mode in combination with -list to provide
+     *            a file with a newline separated pidlist -?,--help Print usage
+     *            information -cache,--cache &lt;arg&gt; Specify local directory
+     *            -dtl,--dtl &lt;arg&gt; Specify digitool url
+     *            -fedoraBase,--fedoraBase &lt;arg&gt; The Fedora Baseurl
+     *            -host,--host &lt;arg&gt; The Fedora Baseurl -list,--list
+     *            &lt;arg&gt; Path to a file with a newline separated pidlist.
+     *            Only needed in combination with mode PIDL and DELE.
+     *            -namespace,--namespace &lt;arg&gt; The namespace to operate
+     *            on. -p,--password &lt;arg&gt; Specify password -set,--set
+     *            &lt;arg&gt; Specify an OAI setSpec -timestamp,--timestamp
+     *            &lt;arg&gt; Specify a local file e.g. .oaitimestamp -u,--user
+     *            &lt;arg&gt; Specify username
      */
     public void main(String[] args) {
 	init(args);

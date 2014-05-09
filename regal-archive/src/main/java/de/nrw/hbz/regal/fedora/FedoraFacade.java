@@ -328,12 +328,14 @@ class FedoraFacade implements FedoraInterface {
 	try {
 	    GetDatastreamResponse response = new GetDatastream(pid, "data")
 		    .execute();
+	    System.out.println("FedoraFacade: read "
+		    + response.getDatastreamProfile().getDsMIME());
 	    node.setMimeType(response.getDatastreamProfile().getDsMIME());
 	    node.setFileLabel(response.getDatastreamProfile().getDsLabel());
 	    node.setChecksum(response.getDatastreamProfile().getDsChecksum());
 	    node.setFileSize(response.getDatastreamProfile().getDsSize());
 	} catch (FedoraClientException e) {
-	    logger.debug("Missing mimetype and label", e);
+	    throw new ReadNodeException(pid, e);
 	}
 
 	return node;
