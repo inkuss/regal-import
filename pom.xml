@@ -142,49 +142,25 @@
 			<scope>compile</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>com.sun.xml.bind</groupId>
-			<artifactId>jaxb-impl</artifactId>
-			<version>2.2.6</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.xml.bind</groupId>
-			<artifactId>jaxb-api</artifactId>
-			<version>2.2.6</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.ws.xmlschema</groupId>
-			<artifactId>xmlschema</artifactId>
-			<version>2.0.2</version>
-			<type>pom</type>
-		</dependency>
-		<dependency>
-			<groupId>com.yourmediashelf.fedora.client</groupId>
-			<artifactId>fedora-client</artifactId>
-			<version>0.7</version>
-			<type>pom</type>
-		</dependency>
-		<dependency>
-			<groupId>com.yourmediashelf.fedora.client</groupId>
-			<artifactId>fedora-client-core</artifactId>
-			<version>0.7</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.sun.jersey.contribs</groupId>
-			<artifactId>jersey-multipart</artifactId>
-			<version>1.17.1</version>
-		</dependency>
+	
+			<dependency>
+<groupId>com.yourmediashelf.fedora.client</groupId>
+<artifactId>fedora-client</artifactId>
+<version>0.7</version>
+<type>pom</type>
+</dependency>
+<dependency>
+<groupId>com.yourmediashelf.fedora.client</groupId>
+<artifactId>fedora-client-core</artifactId>
+<version>0.7</version>
+</dependency>
+		
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-repository-sail</artifactId>
 			<version>${sesame.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>javax.xml.rpc</groupId>
-			<artifactId>javax.xml.rpc-api</artifactId>
-			<version>1.1</version>
-		</dependency>
+	
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-sail-memory</artifactId>
@@ -195,20 +171,22 @@
 			<artifactId>sesame-sail-nativerdf</artifactId>
 			<version>${sesame.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>1.3.2</version>
-		</dependency>
+		
 		<dependency>
 			<groupId>org.elasticsearch</groupId>
 			<artifactId>elasticsearch</artifactId>
 			<version>${es.version}</version>
 		</dependency>
-			<dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.github.jsonld-java</groupId>
+			<artifactId>jsonld-java-sesame</artifactId>
+			<version>0.3</version>
 		</dependency>
 	</dependencies>
 </project>

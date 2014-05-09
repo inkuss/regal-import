@@ -330,16 +330,15 @@ public class Utils {
 	    Upload request = new Upload(file);
 	    UploadResponse response = request.execute();
 	    String location = response.getUploadLocation();
-
 	    if (dataStreamExists(node.getPID(), "data")) {
 		new ModifyDatastream(node.getPID(), "data").versionable(true)
-			.dsState("A").dsLabel(file.getName()).controlGroup("M")
-			.mimeType(node.getMimeType()).dsLocation(location)
-			.execute();
+			.dsState("A").dsLabel(node.getFileLabel())
+			.mimeType(node.getMimeType()).controlGroup("M")
+			.dsLocation(location).execute();
 	    } else {
 		new AddDatastream(node.getPID(), "data").versionable(true)
-			.dsState("A").dsLabel(node.getFileLabel())
-			.mimeType(node.getMimeType()).dsLocation(location)
+			.dsState("A").mimeType(node.getMimeType())
+			.dsLabel(node.getFileLabel()).dsLocation(location)
 			.controlGroup("M").execute();
 	    }
 	} catch (Exception e) {
@@ -684,14 +683,6 @@ public class Utils {
 	if (nodeExists(m.getServiceDeploymentPID()))
 	    new PurgeObject(m.getServiceDeploymentPID()).execute();
     }
-
-    // void linkContentModel(Transformer hbzNodeContentModel, Node node) {
-    // Link link = new Link();
-    // link.setPredicate(REL_HAS_MODEL);
-    // link.setObject(addUriPrefix(hbzNodeContentModel.getContentModelPID()),
-    // false);
-    // node.addRelation(link);
-    // }
 
     /**
      * Links a list of contentModels to a node
