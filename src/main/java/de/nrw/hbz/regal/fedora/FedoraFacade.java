@@ -222,42 +222,31 @@ class FedoraFacade implements FedoraInterface {
 
     @Override
     public void createNode(Node node) {
-
 	try {
-
 	    new Ingest(node.getPID()).label(node.getLabel()).execute();
-
 	    DublinCoreHandler.updateDc(node);
-
 	    List<Transformer> cms = node.getContentModels();
 	    // utils.createContentModels(cms);
 	    utils.linkContentModels(cms, node);
-
 	    if (node.getUploadFile() != null) {
 		utils.createManagedStream(node);
-
 	    }
 	    if (node.getMetadataFile() != null) {
 		utils.createMetadataStream(node);
-
 	    }
-
 	    Link link = new Link();
 	    link.setObject(node.getContentType(), true);
 	    link.setPredicate(REL_CONTENT_TYPE);
 	    node.addRelation(link);
-
 	    link = new Link();
 	    link.setObject(node.getNodeType(), true);
 	    link.setPredicate(REL_IS_NODE_TYPE);
 	    node.addRelation(link);
-
 	    utils.createRelsExt(node);
 	} catch (Exception e) {
 	    e.printStackTrace();
 	    throw new CreateNodeException(e);
 	}
-
     }
 
     @Override
@@ -307,11 +296,9 @@ class FedoraFacade implements FedoraInterface {
     public Node readNode(String pid) {
 	if (!nodeExists(pid))
 	    throw new NodeNotFoundException(pid);
-
 	Node node = new Node();
 	node.setPID(pid);
 	node.setNamespace(pid.substring(0, pid.indexOf(':')));
-
 	try {
 	    DublinCoreHandler.readFedoraDcToNode(node);
 	    utils.readRelsExt(node);
@@ -320,11 +307,9 @@ class FedoraFacade implements FedoraInterface {
 	    node.setLabel(prof.getLabel());
 	    node.setLastModified(prof.getLastModifiedDate());
 	    node.setCreationDate(prof.getCreateDate());
-
 	} catch (FedoraClientException e) {
 	    throw new ReadNodeException(pid, e);
 	}
-
 	try {
 	    GetDatastreamResponse response = new GetDatastream(pid, "data")
 		    .execute();
@@ -337,41 +322,32 @@ class FedoraFacade implements FedoraInterface {
 	} catch (FedoraClientException e) {
 	    // datastream with name data is optional
 	}
-
 	return node;
     }
 
     @Override
     public void updateNode(Node node) {
 	DublinCoreHandler.updateDc(node);
-
 	List<Transformer> models = node.getContentModels();
 	// utils.updateContentModels(models);
 	node.removeRelations(REL_HAS_MODEL);
 	if (node.getUploadFile() != null) {
 	    utils.updateManagedStream(node);
 	}
-
 	if (node.getMetadataFile() != null) {
 	    utils.updateMetadataStream(node);
 	}
 	utils.linkContentModels(models, node);
 	utils.updateRelsExt(node);
-
     }
 
     @Override
     public List<String> findPids(String rdfQuery, String queryFormat) {
-
 	if (queryFormat.compareTo(FedoraVocabulary.SIMPLE) == 0) {
-
 	    return utils.findPidsSimple(rdfQuery);
-	}
-
-	else {
+	} else {
 	    return findPidsRdf(rdfQuery, queryFormat);
 	}
-
     }
 
     @Override
@@ -386,9 +362,7 @@ class FedoraFacade implements FedoraInterface {
     }
 
     @Override
-    public String[] getPids(String namespace, int number)
-
-    {
+    public String[] getPids(String namespace, int number) {
 	try {
 	    GetNextPIDResponse response = new GetNextPID().namespace(namespace)
 		    .numPIDs(number).execute();
@@ -415,13 +389,11 @@ class FedoraFacade implements FedoraInterface {
 
     @Override
     public void deleteDatastream(String pid, String datastream) {
-
 	try {
 	    new ModifyDatastream(pid, datastream).dsState("D").execute();
 	} catch (FedoraClientException e) {
 	    throw new DeleteDatastreamException(pid, e);
 	}
-
     }
 
     @Override
@@ -453,7 +425,6 @@ class FedoraFacade implements FedoraInterface {
 
     @Override
     public String addUriPrefix(String pid) {
-
 	return utils.addUriPrefix(pid);
     }
 
@@ -472,14 +443,10 @@ class FedoraFacade implements FedoraInterface {
 	if (!nodeExists(rootPID)) {
 	    throw new NodeNotFoundException(rootPID);
 	}
-	// logger.info("deleteObject");
-
-	// Find all children
 	List<String> pids = null;
 	List<Node> result = new ArrayList<Node>();
 	result.add(readNode(rootPID));
 	pids = findPids("* <" + IS_PART_OF + "> <" + rootPID + ">", SPO);
-	// Delete all children
 	if (pids != null)
 	    for (String pid : pids) {
 		Node node = readNode(pid);
@@ -495,12 +462,10 @@ class FedoraFacade implements FedoraInterface {
 	    throw new NodeNotFoundException(rootPID);
 	}
 	Node root = readNode(rootPID);
-	// Find all children
 	List<String> pids = null;
 	List<Node> result = new ArrayList<Node>();
 	result.add(root);
 	pids = findPids("* <" + IS_PART_OF + "> <" + rootPID + ">", SPO);
-	// Delete all children
 	if (pids != null)
 	    for (String pid : pids) {
 		Node node = readNode(pid);
@@ -576,10 +541,8 @@ class FedoraFacade implements FedoraInterface {
     @Override
     public boolean dataStreamExists(String pid, String datastreamId) {
 	try {
-
 	    ListDatastreamsResponse response = new ListDatastreams(pid)
 		    .execute();
-
 	    for (DatastreamType ds : response.getDatastreams()) {
 		if (ds.getDsid().compareTo(datastreamId) == 0) {
 		    GetDatastreamResponse r = new GetDatastream(pid,
@@ -590,7 +553,6 @@ class FedoraFacade implements FedoraInterface {
 			return true;
 		}
 	    }
-
 	} catch (FedoraClientException e) {
 	    return false;
 	}
@@ -600,40 +562,27 @@ class FedoraFacade implements FedoraInterface {
     private List<String> findPidsRdf(String rdfQuery, String queryFormat) {
 	InputStream stream = findTriples(rdfQuery, FedoraVocabulary.SPO,
 		FedoraVocabulary.N3);
-
 	List<String> resultVector = new Vector<String>();
 	RepositoryConnection con = null;
 	Repository myRepository = new SailRepository(new MemoryStore());
-
 	try {
-
 	    myRepository.initialize();
-
 	    con = myRepository.getConnection();
 	    String baseURI = "";
-
 	    con.add(stream, baseURI, RDFFormat.N3);
-
 	    RepositoryResult<Statement> statements = con.getStatements(null,
 		    null, null, true);
-
 	    while (statements.hasNext()) {
 		Statement st = statements.next();
 		String str = removeUriPrefix(st.getSubject().stringValue());
-
 		resultVector.add(str);
-
 	    }
 	    return resultVector;
-
 	} catch (RepositoryException e) {
-
 	    throw new RdfException(rdfQuery, e);
 	} catch (RDFParseException e) {
-
 	    throw new RdfException(rdfQuery, e);
 	} catch (IOException e) {
-
 	    throw new RdfException(rdfQuery, e);
 	} finally {
 	    if (con != null) {
