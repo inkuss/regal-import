@@ -335,7 +335,7 @@ class FedoraFacade implements FedoraInterface {
 	    node.setChecksum(response.getDatastreamProfile().getDsChecksum());
 	    node.setFileSize(response.getDatastreamProfile().getDsSize());
 	} catch (FedoraClientException e) {
-	    throw new ReadNodeException(pid, e);
+	    // datastream with name data is optional
 	}
 
 	return node;
