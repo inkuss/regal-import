@@ -23,6 +23,10 @@ import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 
+import models.DCBeanAnnotated;
+import models.ObjectType;
+import models.RegalObject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,9 +42,6 @@ import com.sun.jersey.multipart.MultiPart;
 import com.sun.jersey.multipart.file.StreamDataBodyPart;
 import com.sun.jersey.multipart.impl.MultiPartWriter;
 
-import de.nrw.hbz.regal.api.CreateObjectBean;
-import de.nrw.hbz.regal.api.DCBeanAnnotated;
-import de.nrw.hbz.regal.api.helper.ObjectType;
 import de.nrw.hbz.regal.sync.extern.DigitalEntity;
 import de.nrw.hbz.regal.sync.extern.Stream;
 import de.nrw.hbz.regal.sync.extern.StreamType;
@@ -197,7 +198,7 @@ public class Webclient {
 	String parentPid = namespace + ":" + ppid;
 	String resourceUrl = endpoint + "/resource/" + pid;
 	WebResource resource = webclient.resource(resourceUrl);
-	CreateObjectBean input = new CreateObjectBean();
+	RegalObject input = new RegalObject();
 	List<String> ts = dtlBean.getTransformer();
 	if (ts != null && !ts.isEmpty())
 	    input.setTransformer(ts);
@@ -353,8 +354,8 @@ public class Webclient {
      */
     public void addUrn(String id, String ns, String snid) {
 	WebResource resource = webclient.resource(endpoint
-		+ "/utils/addUrn?id=" + id + "&namespace=" + ns
-		+ "&snid=" + snid);
+		+ "/utils/addUrn?id=" + id + "&namespace=" + ns + "&snid="
+		+ snid);
 	resource.post();
     }
 }
