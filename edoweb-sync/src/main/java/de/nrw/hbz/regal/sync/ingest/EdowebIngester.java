@@ -18,10 +18,11 @@ package de.nrw.hbz.regal.sync.ingest;
 
 import java.util.Vector;
 
+import models.ObjectType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.nrw.hbz.regal.api.helper.ObjectType;
 import de.nrw.hbz.regal.sync.extern.DigitalEntity;
 import de.nrw.hbz.regal.sync.extern.DigitalEntityRelation;
 import de.nrw.hbz.regal.sync.extern.RelatedDigitalEntity;

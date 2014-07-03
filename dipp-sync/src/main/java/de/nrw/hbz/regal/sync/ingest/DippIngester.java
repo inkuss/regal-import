@@ -20,10 +20,11 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
+import models.ObjectType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.nrw.hbz.regal.api.helper.ObjectType;
 import de.nrw.hbz.regal.sync.extern.DigitalEntity;
 import de.nrw.hbz.regal.sync.extern.RelatedDigitalEntity;
 

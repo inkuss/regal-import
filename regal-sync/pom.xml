@@ -22,42 +22,40 @@
 			<version>20040117.000000</version>
 
 		</dependency>
-
+		<dependency>
+			<groupId>de.nrw.hbz.regal</groupId>
+			<artifactId>regal-archive</artifactId>
+			<version>${regal.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>de.nrw.hbz.regal</groupId>
 			<artifactId>regal-api</artifactId>
 			<version>${regal.version}</version>
-
 		</dependency>
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-bundle</artifactId>
 			<version>1.14</version>
-
 		</dependency>
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-client</artifactId>
 			<version>1.14</version>
-
 		</dependency>
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-servlet</artifactId>
 			<version>1.14</version>
-
 		</dependency>
 		<dependency>
 			<groupId>com.sun.jersey.contribs</groupId>
 			<artifactId>jersey-multipart</artifactId>
 			<version>1.14</version>
-
 		</dependency>
 		<dependency>
 			<groupId>com.sun.jersey.contribs</groupId>
 			<artifactId>jersey-apache-client</artifactId>
 			<version>1.14</version>
-
 		</dependency>
 
 		<dependency>

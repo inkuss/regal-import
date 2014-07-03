@@ -16,6 +16,10 @@
  */
 package de.nrw.hbz.regal.api.helper;
 
+import helper.Actions;
+import helper.HttpArchiveException;
+import helper.Services;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -24,13 +28,13 @@ import java.util.List;
 import java.util.Vector;
 
 import junit.framework.Assert;
+import models.DCBeanAnnotated;
+import models.RegalObject;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.nrw.hbz.regal.api.CreateObjectBean;
-import de.nrw.hbz.regal.api.DCBeanAnnotated;
 import de.nrw.hbz.regal.datatypes.Node;
 import de.nrw.hbz.regal.datatypes.Transformer;
 import de.nrw.hbz.regal.exceptions.ArchiveException;
@@ -72,12 +76,12 @@ public class TestActions {
 
     public void createTestObject(String pid) throws IOException {
 	// actions.contentModelsInit("test");
-	CreateObjectBean input = new CreateObjectBean();
+	RegalObject input = new RegalObject();
 	input.setType("monograph");
-	actions.createResource(input, pid, "test");
+	actions.createResource("monograph", null, null, pid, "test");
 	DCBeanAnnotated dc = new DCBeanAnnotated();
 	dc.addIdentifier("HT015702837");
-	actions.updateDC("test:" + pid, dc);
+	// actions.updateDC("test:" + pid, json);
 	actions.updateData("test:" + pid, Thread.currentThread()
 		.getContextClassLoader().getResourceAsStream("test.pdf"),
 		"application/pdf", "TestFile", null);
@@ -99,7 +103,7 @@ public class TestActions {
     public void deleteMetadata() throws IOException {
 	createTestObject("123");
 	actions.readMetadata("test:123");
-	actions.deleteMetadata("123", "test");
+	actions.deleteMetadata("test:123");
 	actions.deleteData("test:123");
 	actions.readMetadata("test:123");
     }
@@ -203,7 +207,7 @@ public class TestActions {
 	// The pdfA conversion needs a public address
 	if (actions.getServer().contains("localhost"))
 	    return;
-	String response = actions.pdfa(node);
+	String response = actions.getPdfaUrl(node);
 	Assert.assertNotNull(response);
 	System.out.println(response);
     }
@@ -298,11 +302,12 @@ public class TestActions {
 	for (int i = 0; i < ts.size(); i++) {
 	    transformer.add(ts.get(i).getId());
 	}
-	CreateObjectBean input = new CreateObjectBean();
+	RegalObject input = new RegalObject();
 	input.setTransformer(transformer);
 	input.setType(node.getContentType());
 	input.setParentPid(null);
-	actions.createResource(input, "123", "test");
+	actions.createResource(input.getType(), input.getParentPid(),
+		input.getTransformer(), "123", "test");
 	node = actions.readNode(node.getPID());
 
 	HashMap<String, String> map = new HashMap<String, String>();
@@ -342,7 +347,7 @@ public class TestActions {
     public void addUrnIfNoMetadataExists() throws IOException,
 	    InterruptedException {
 	createTestObject("123");
-	actions.deleteMetadata("123", "test");
+	actions.deleteMetadata("test:123");
 	Thread.sleep(10000);
 	actions.addUrn("123", "test", "hbz:test:902");
     }
