@@ -50,10 +50,9 @@ public class Node {
     private String contentType = null;
     private Date lastModified = null;
     private Date creationDate = null;
-
-    private BigInteger fileSize;
-
-    private String checksum;
+    private BigInteger fileSize = null;
+    private String checksum = null;
+    private String accessScheme = null;
 
     /**
      * Creates a new Node.
@@ -478,6 +477,14 @@ public class Node {
      */
     public void setCreationDate(Date createDate) {
 	creationDate = createDate;
+    }
+
+    public String getAccessScheme() {
+	return accessScheme;
+    }
+
+    public void setAccessScheme(String accessScheme) {
+	this.accessScheme = accessScheme;
     }
 
 }

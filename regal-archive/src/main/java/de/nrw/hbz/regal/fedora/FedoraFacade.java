@@ -16,6 +16,7 @@
  */
 package de.nrw.hbz.regal.fedora;
 
+import static de.nrw.hbz.regal.datatypes.Vocabulary.REL_ACCESS_SCHEME;
 import static de.nrw.hbz.regal.datatypes.Vocabulary.REL_CONTENT_TYPE;
 import static de.nrw.hbz.regal.datatypes.Vocabulary.REL_IS_NODE_TYPE;
 import static de.nrw.hbz.regal.fedora.FedoraVocabulary.HAS_PART;
@@ -241,6 +242,10 @@ class FedoraFacade implements FedoraInterface {
 	    link = new Link();
 	    link.setObject(node.getNodeType(), true);
 	    link.setPredicate(REL_IS_NODE_TYPE);
+	    node.addRelation(link);
+	    link = new Link();
+	    link.setObject(node.getAccessScheme(), true);
+	    link.setPredicate(REL_ACCESS_SCHEME);
 	    node.addRelation(link);
 	    utils.createRelsExt(node);
 	} catch (Exception e) {

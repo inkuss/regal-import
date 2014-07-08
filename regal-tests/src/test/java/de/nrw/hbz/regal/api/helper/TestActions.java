@@ -78,7 +78,7 @@ public class TestActions {
 	// actions.contentModelsInit("test");
 	RegalObject input = new RegalObject();
 	input.setType("monograph");
-	actions.createResource("monograph", null, null, pid, "test");
+	actions.createResource("monograph", null, null, "lbz-wide", pid, "test");
 	DCBeanAnnotated dc = new DCBeanAnnotated();
 	dc.addIdentifier("HT015702837");
 	// actions.updateDC("test:" + pid, json);
@@ -307,7 +307,7 @@ public class TestActions {
 	input.setType(node.getContentType());
 	input.setParentPid(null);
 	actions.createResource(input.getType(), input.getParentPid(),
-		input.getTransformer(), "123", "test");
+		input.getTransformer(), "lbz-wide", "123", "test");
 	node = actions.readNode(node.getPID());
 
 	HashMap<String, String> map = new HashMap<String, String>();

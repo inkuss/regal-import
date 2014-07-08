@@ -48,4 +48,10 @@ public abstract class Vocabulary {
      * A default type
      */
     public final static String TYPE_OBJECT = HBZ_MODEL_NAMESPACE + "HBZ_OBJECT";
+
+    /**
+     * The access scheme rules the access to a node
+     */
+    public final static String REL_ACCESS_SCHEME = HBZ_MODEL_NAMESPACE
+	    + "accessScheme";
 }
