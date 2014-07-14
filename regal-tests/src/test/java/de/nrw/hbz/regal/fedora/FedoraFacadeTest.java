@@ -30,10 +30,14 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.nrw.hbz.regal.datatypes.Link;
-import de.nrw.hbz.regal.datatypes.Node;
-import de.nrw.hbz.regal.datatypes.Transformer;
-import de.nrw.hbz.regal.datatypes.Vocabulary;
+import archive.datatypes.Link;
+import archive.datatypes.Node;
+import archive.datatypes.Transformer;
+import archive.datatypes.Vocabulary;
+import archive.fedora.FedoraFacade;
+import archive.fedora.FedoraFactory;
+import archive.fedora.FedoraInterface;
+import archive.fedora.FedoraVocabulary;
 
 /**
  * 

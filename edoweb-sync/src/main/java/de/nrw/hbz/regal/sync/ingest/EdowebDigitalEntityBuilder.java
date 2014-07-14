@@ -39,7 +39,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import de.nrw.hbz.regal.fedora.XmlUtils;
+import archive.fedora.XmlUtils;
 import de.nrw.hbz.regal.sync.extern.DigitalEntity;
 import de.nrw.hbz.regal.sync.extern.DigitalEntityBuilderInterface;
 import de.nrw.hbz.regal.sync.extern.DigitalEntityRelation;

@@ -35,12 +35,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.nrw.hbz.regal.datatypes.Node;
-import de.nrw.hbz.regal.datatypes.Transformer;
-import de.nrw.hbz.regal.exceptions.ArchiveException;
-import de.nrw.hbz.regal.fedora.CopyUtils;
-import de.nrw.hbz.regal.fedora.RdfUtils;
-import de.nrw.hbz.regal.fedora.XmlUtils;
+import archive.datatypes.Node;
+import archive.datatypes.Transformer;
+import archive.exceptions.ArchiveException;
+import archive.fedora.CopyUtils;
+import archive.fedora.RdfUtils;
+import archive.fedora.XmlUtils;
 import de.nrw.hbz.regal.sync.extern.Md5Checksum;
 
 /**

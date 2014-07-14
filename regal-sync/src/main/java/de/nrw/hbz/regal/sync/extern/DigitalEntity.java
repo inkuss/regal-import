@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Vector;
 
-import de.nrw.hbz.regal.fedora.XmlUtils;
+import archive.fedora.XmlUtils;
 
 /**
  * @author Jan Schnasse, schnasse@hbz-nrw.de
