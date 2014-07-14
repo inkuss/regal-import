@@ -1,9 +1,14 @@
 language: java
-jdk: oraclejdk7
-install:
-  - mvn clean install -e --settings settings.xml
-before_script:
-  - 
+jdk: oraclejdk8
+
 script:
-  - 
-  
+  - mkdir -p /home/travis/build/jschnasse/regal/target/opt/regal/bin
+  - ln -s /home/travis/build/jschnasse/regal /home/travis/build/jschnasse/regal/target/opt/regal/src
+  - cd /home/travis/build/jschnasse/regal/target/opt/regal/bin
+  - cp -r /home/travis/build/jschnasse/regal/regal-installer/* .
+  - sed s%~%/home/travis/build/jschnasse/regal/target% variables.conf.tmpl > variables.conf
+  - ./configure.sh
+  - ./install-all.sh
+  - ./copy-config.sh
+  - ./restart-all.sh
+  - ./run-integration-tests.sh
