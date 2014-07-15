@@ -1,4 +1,4 @@
-package de.nrw.hbz.regal.sync;
+package de.nrw.hbz.regal;
 
 import org.junit.Test;
 

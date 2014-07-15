@@ -1,5 +1,3 @@
-package de.nrw.hbz.regal.sync;
-
 /*
  * Copyright 2012 hbz NRW (http://www.hbz-nrw.de/)
  *
@@ -16,64 +14,58 @@ package de.nrw.hbz.regal.sync;
  * limitations under the License.
  *
  */
+package de.nrw.hbz.regal.sync.ingest;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.nrw.hbz.regal.sync.ingest.DigitoolDownloader;
-import de.nrw.hbz.regal.sync.ingest.DownloaderInterface;
-
 /**
- * @author Jan Schnasse, schnasse@hbz-nrw.de
+ * 
+ * @author Jan Schnasse schnasse@hbz-nrw.de
  * 
  */
 @SuppressWarnings("javadoc")
-public class TestDigitoolDownloader {
+public class TestOpusDownloader {
     Properties properties = new Properties();
-
+    /*
+     * 1637992 4676380 2258539 1638892 4628526
+     */
+    String pid = "1";// "3237397";//
     private final String piddownloaderServer;
     private final String piddownloaderDownloadLocation;
 
-    public TestDigitoolDownloader() throws IOException {
-
+    public TestOpusDownloader() throws IOException {
 	properties = new Properties();
 	properties.load(getClass().getResourceAsStream(
-		"/testEdowebDownloader.properties"));
-
+		"/testOpusDownloader.properties"));
 	piddownloaderServer = properties.getProperty("piddownloader.server");
 	piddownloaderDownloadLocation = properties
 		.getProperty("piddownloader.downloadLocation");
-	File dir = new File(piddownloaderDownloadLocation);
-	dir.mkdirs();
     }
 
     @Before
-    public void setUp() {
-	// fill me up
+    public void setUp() throws IOException {
+	FileUtils.deleteDirectory(new File(piddownloaderDownloadLocation));
     }
 
     @Test
     public void downloadPid() throws IOException {
-	FileUtils.deleteDirectory(new File(piddownloaderDownloadLocation
-		+ File.separator + "3025500"));
-	DownloaderInterface downloader = new DigitoolDownloader();
+
+	OpusDownloader downloader = new OpusDownloader();
 	downloader.init(piddownloaderServer, piddownloaderDownloadLocation);
-	downloader.download("4000748");
-	Assert.assertTrue(new File(piddownloaderDownloadLocation
-		+ File.separator + "4000748").exists());
-	FileUtils.deleteDirectory(new File(piddownloaderDownloadLocation
-		+ File.separator + "3025500"));
-	downloader.download("3237400");
+	downloader.download(pid);
+	File file = new File(piddownloaderDownloadLocation + File.separator
+		+ pid);
+	Assert.assertTrue(file.exists());
+	FileUtils.deleteDirectory(file);
+	Assert.assertTrue(!file.exists());
+
     }
 
-    @After
-    public void tearDown() {
-	// fill me up
-    }
 }
