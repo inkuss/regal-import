@@ -46,8 +46,7 @@ public class TestDippDownloader {
     public TestDippDownloader() {
 	try {
 	    properties = new Properties();
-	    properties.load(getClass().getResourceAsStream(
-		    "/testDippDownloader.properties"));
+	    properties.load(getClass().getResourceAsStream("/test.properties"));
 	} catch (FileNotFoundException e) {
 	    e.printStackTrace();
 	} catch (IOException e) {
