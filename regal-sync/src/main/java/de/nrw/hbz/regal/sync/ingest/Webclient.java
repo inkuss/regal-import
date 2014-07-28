@@ -23,7 +23,7 @@ import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 
-import models.DCBeanAnnotated;
+import models.DublinCoreData;
 import models.ObjectType;
 import models.RegalObject;
 
@@ -107,7 +107,7 @@ public class Webclient {
     }
 
     private void setIdentifier(DigitalEntity dtlBean) {
-	DCBeanAnnotated dc = new DCBeanAnnotated();
+	DublinCoreData dc = new DublinCoreData();
 	dc.setIdentifier(dtlBean.getIdentifier());
 	String pid = namespace + ":" + dtlBean.getPid();
 	String resource = endpoint + "/resource/" + pid + "/dc";
@@ -228,7 +228,7 @@ public class Webclient {
 	metadataRes.put(metadata);
     }
 
-    private void updateDc(String url, DCBeanAnnotated dc) {
+    private void updateDc(String url, DublinCoreData dc) {
 	WebResource metadataRes = webclient.resource(url);
 	metadataRes.put(dc);
     }
@@ -239,7 +239,7 @@ public class Webclient {
 
 	    WebResource webpageDC = webclient.resource(url + "/dc");
 
-	    DCBeanAnnotated dc = new DCBeanAnnotated();
+	    DublinCoreData dc = new DublinCoreData();
 
 	    dc.addTitle("Version of: " + pid);
 	    dc.addDescription(dtlBean.getLabel());
