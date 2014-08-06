@@ -45,7 +45,7 @@ public class EdowebIngester implements IngestInterface {
 	this.namespace = ns;
 	this.host = host;
 	webclient = new Webclient(namespace, user, password, host);
-	webclient.initContentModels();
+	webclient.initContentModels(namespace);
     }
 
     @Override

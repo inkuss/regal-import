@@ -5,7 +5,7 @@ h1. About
 
 regal-import serves a collection of specialised import modules to mirror digital content of existing repositories to regal. The basic module can be found in regal-sync. Writing a new module can be done by extending a few classes of regal-sync.
 
-For more information visit the "wiki":https://github.com/edoweb/edoweb2/wiki/
+For more information visit the "wiki":https://github.com/edoweb/edoweb2/wiki/ and "create your own importer":https://github.com/edoweb/regal/wiki/Extending
 
 h1. License
 

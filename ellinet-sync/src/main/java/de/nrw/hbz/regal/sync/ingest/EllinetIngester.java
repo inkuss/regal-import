@@ -34,7 +34,7 @@ public class EllinetIngester extends EdowebIngester {
 	this.namespace = ns;
 	this.host = host;
 	webclient = new Webclient(namespace, user, password, host);
-	webclient.initContentModels();
+	webclient.initContentModels(namespace);
     }
 
     @Override

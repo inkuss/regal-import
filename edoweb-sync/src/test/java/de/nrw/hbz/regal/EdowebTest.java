@@ -23,6 +23,7 @@ import java.net.URISyntaxException;
 import java.util.Properties;
 
 import org.junit.Before;
+import org.junit.Test;
 
 import de.nrw.hbz.regal.sync.EdowebMain;
 
@@ -73,6 +74,7 @@ public class EdowebTest {
 	localcache = properties.getProperty("piddownloader.downloadLocation");
     }
 
+    @Test
     public void mainTest() throws URISyntaxException {
 
 	pidlist = Thread.currentThread().getContextClassLoader()
@@ -82,7 +84,7 @@ public class EdowebTest {
 			"--password", password, "--dtl", downloadHost,
 			"-cache", localcache, "--oai", oaiHost, "--set",
 			oaiSet, "--timestamp", oaitimestamp, "--fedoraBase",
-			fedoraUrl, "--host", "http://api.localhost", "-list",
+			fedoraUrl, "--host", "http://localhost:9000", "-list",
 			pidlist, "-namespace", "test" });
 	EdowebMain
 		.main(new String[] { "--mode", "DELE", "--user", user,

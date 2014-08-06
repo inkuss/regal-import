@@ -17,8 +17,6 @@
 package de.nrw.hbz.regal.sync.ingest;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.List;
 
 import javax.ws.rs.core.MediaType;
@@ -37,9 +35,8 @@ import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.client.apache.config.DefaultApacheHttpClientConfig;
-import com.sun.jersey.multipart.BodyPart;
-import com.sun.jersey.multipart.MultiPart;
-import com.sun.jersey.multipart.file.StreamDataBodyPart;
+import com.sun.jersey.multipart.FormDataMultiPart;
+import com.sun.jersey.multipart.file.FileDataBodyPart;
 import com.sun.jersey.multipart.impl.MultiPartWriter;
 
 import de.nrw.hbz.regal.sync.extern.DigitalEntity;
@@ -77,6 +74,7 @@ public class Webclient {
 	this.namespace = namespace;
 	ClientConfig cc = new DefaultClientConfig();
 	cc.getClasses().add(MultiPartWriter.class);
+	cc.getClasses().add(FormDataMultiPart.class);
 	cc.getProperties().put(ClientConfig.PROPERTY_FOLLOW_REDIRECTS, true);
 	cc.getFeatures().put(ClientConfig.FEATURE_DISABLE_XML_SECURITY, true);
 	cc.getProperties().put(
@@ -84,7 +82,7 @@ public class Webclient {
 		1024);
 	webclient = Client.create(cc);
 	webclient.addFilter(new HTTPBasicAuthFilter(user, password));
-	endpoint = host + ":8080/api";
+	endpoint = host;
     }
 
     /**
@@ -203,19 +201,18 @@ public class Webclient {
 	if (ts != null && !ts.isEmpty())
 	    input.setTransformer(ts);
 	input.setType(type.toString());
-	logger.debug(pid + " type: " + input.getType());
+	input.setAccessScheme("private");
+	logger.info(pid + " type: " + input.getType());
 	if (ppid != null && !ppid.isEmpty()) {
-
 	    input.setParentPid(parentPid);
-
 	}
-
 	try {
-	    resource.put(input);
-	} catch (UniformInterfaceException e) {
+	    logger.info("curl -XPUT -uedoweb-admin:admin -d'" + input + "' "
+		    + resource);
+	    resource.type("application/json").put(input.toString());
+	} catch (Exception e) {
 	    logger.info(pid + " " + e.getMessage(), e);
 	}
-
     }
 
     private String readMetadata(String url, DigitalEntity dtlBean) {
@@ -229,60 +226,38 @@ public class Webclient {
     }
 
     private void updateDc(String url, DublinCoreData dc) {
-	WebResource metadataRes = webclient.resource(url);
-	metadataRes.put(dc);
+	try {
+	    WebResource resource = webclient.resource(url);
+	    logger.info("curl -XPUT -uedoweb-admin:admin " + resource + " -d'"
+		    + dc.toString() + "'");
+	    resource.type("application/json").put(dc.toString());
+	} catch (Exception e) {
+	    logger.info("", e);
+	}
     }
 
     private void updateLabel(String url, DigitalEntity dtlBean) {
 	String pid = namespace + ":" + dtlBean.getPid();
-	try {
-
-	    WebResource webpageDC = webclient.resource(url + "/dc");
-
-	    DublinCoreData dc = new DublinCoreData();
-
-	    dc.addTitle("Version of: " + pid);
-	    dc.addDescription(dtlBean.getLabel());
-	    webpageDC.put(dc);
-
-	} catch (UniformInterfaceException e) {
-	    logger.info(pid + " " + e.getMessage(), e);
-	} catch (Exception e) {
-	    logger.debug(pid + " " + e.getMessage(), e);
-	}
+	DublinCoreData dc = new DublinCoreData();
+	dc.addTitle("Version of: " + pid);
+	dc.addDescription(dtlBean.getLabel());
+	updateDc(url + "/dc", dc);
     }
 
     private void updateData(String url, DigitalEntity dtlBean) {
 	String pid = namespace + ":" + dtlBean.getPid();
-	WebResource data = webclient.resource(url);
-
+	WebResource resource = webclient.resource(url);
 	Stream dataStream = dtlBean.getStream(StreamType.DATA);
-
 	try {
-	    logger.info(pid + " Update data: " + dataStream.getMimeType());
-	    MultiPart multiPart = new MultiPart();
-
+	    logger.info(pid + " Update data: " + dataStream.getMimeType() + " "
+		    + dataStream.getFile().getAbsolutePath());
 	    File uploadFile = dataStream.getFile();
-	    String uploadFileName = uploadFile.getName();
-	    String uploadFileMimeType = dataStream.getMimeType();
-
-	    multiPart.bodyPart(new StreamDataBodyPart("InputStream",
-		    new FileInputStream(uploadFile), uploadFileName));
-	    multiPart.bodyPart(new BodyPart(uploadFileMimeType,
-		    MediaType.TEXT_PLAIN_TYPE));
-
-	    logger.info("Upload: " + dataStream);
-	    multiPart.bodyPart(new BodyPart(uploadFileName.substring(0,
-		    uploadFileName.indexOf('.')), MediaType.TEXT_PLAIN_TYPE));
-	    multiPart.bodyPart(new BodyPart(dataStream.getMd5Hash(),
-		    MediaType.TEXT_PLAIN_TYPE));
-	    data.type("multipart/mixed").post(multiPart);
-
+	    FormDataMultiPart form = new FormDataMultiPart();
+	    FileDataBodyPart body = new FileDataBodyPart("data", uploadFile);
+	    form.bodyPart(body);
+	    resource.type(MediaType.MULTIPART_FORM_DATA_TYPE).put(form);
 	} catch (UniformInterfaceException e) {
 	    logger.error(pid + " " + e.getMessage(), e);
-	} catch (FileNotFoundException e) {
-	    logger.error(pid + " " + "FileNotFound "
-		    + dataStream.getFile().getAbsolutePath(), e);
 	} catch (Exception e) {
 	    logger.error(pid + " " + e.getMessage(), e);
 	}
@@ -325,8 +300,8 @@ public class Webclient {
     public void makeOaiSet(DigitalEntity dtlBean) {
 
 	String pid = namespace + ":" + dtlBean.getPid();
-	WebResource oaiSet = webclient.resource(endpoint + "/utils/makeOaiSet/"
-		+ namespace + ":" + dtlBean.getPid());
+	WebResource oaiSet = webclient.resource(endpoint + "/resource/"
+		+ namespace + ":" + dtlBean.getPid() + "/oaisets");
 	try {
 	    oaiSet.post();
 	} catch (UniformInterfaceException e) {
@@ -338,9 +313,9 @@ public class Webclient {
     /**
      * init all known contentModels/Transformers
      */
-    public void initContentModels() {
+    public void initContentModels(String namespace) {
 	WebResource resource = webclient.resource(endpoint
-		+ "/utils/initContentModels");
+		+ "/utils/initContentModels?namespace=" + namespace);
 	resource.post();
     }
 

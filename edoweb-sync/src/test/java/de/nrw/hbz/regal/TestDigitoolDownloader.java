@@ -20,9 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -59,16 +57,18 @@ public class TestDigitoolDownloader {
 
     @Test
     public void downloadPid() throws IOException {
-	FileUtils.deleteDirectory(new File(piddownloaderDownloadLocation
-		+ File.separator + "3025500"));
+	// FileUtils.deleteDirectory(new File(piddownloaderDownloadLocation
+	// + File.separator + "3025500"));
 	DownloaderInterface downloader = new DigitoolDownloader();
 	downloader.init(piddownloaderServer, piddownloaderDownloadLocation);
-	downloader.download("4000748");
-	Assert.assertTrue(new File(piddownloaderDownloadLocation
-		+ File.separator + "4000748").exists());
-	FileUtils.deleteDirectory(new File(piddownloaderDownloadLocation
-		+ File.separator + "3025500"));
-	downloader.download("3237400");
+	// downloader.download("4000748");
+	// Assert.assertTrue(new File(piddownloaderDownloadLocation
+	// + File.separator + "4000748").exists());
+	// FileUtils.deleteDirectory(new File(piddownloaderDownloadLocation
+	// + File.separator + "3025500"));
+	// downloader.download("3237400");
+	downloader.download("4243401");
+	downloader.download("3273325");
     }
 
     @After

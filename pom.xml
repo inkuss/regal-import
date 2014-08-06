@@ -20,6 +20,7 @@
 		<commons.io.version>2.4</commons.io.version>
 		<regal.version>0.5.0-SNAPSHOT</regal.version>
 		<fedora.version>3.7.1</fedora.version>
+		<jersey.version>1.18.1</jersey.version>
 	</properties>
 
 
@@ -202,10 +203,6 @@
 			</plugin>
 		</plugins>
 	</build>
-	<dependencies>
-
-
-	</dependencies>
 	<modules>
 		<module>regal-downloader</module>
 		<module>regal-pidreporter</module>
