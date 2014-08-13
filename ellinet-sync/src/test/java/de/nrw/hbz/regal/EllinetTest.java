@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.junit.Before;
+import org.junit.Test;
 
 import de.nrw.hbz.regal.sync.EllinetMain;
 
@@ -72,20 +73,25 @@ public class EllinetTest {
 	localcache = properties.getProperty("piddownloader.downloadLocation");
     }
 
+    @Test
     public void mainTest() {
 
 	pidlist = Thread.currentThread().getContextClassLoader()
 		.getResource(pidlist).toString().substring(5);
-	EllinetMain.main(new String[] { "--mode", "PIDL", "--user", user,
-		"--password", password, "--dtl", downloadHost, "-cache",
-		localcache, "--oai", oaiHost, "--set", oaiSet, "--timestamp",
-		oaitimestamp, "--fedoraBase", fedoraUrl, "--host",
-		"http://localhost", "-list", pidlist, "-namespace", "test" });
-	EllinetMain.main(new String[] { "--mode", "DELE", "--user", user,
-		"--password", password, "--dtl", downloadHost, "-cache",
-		localcache, "--oai", oaiHost, "--set", oaiSet, "--timestamp",
-		oaitimestamp, "--fedoraBase", fedoraUrl, "--host",
-		"http://localhost", "-list", pidlist, "-namespace", "test" });
+	EllinetMain
+		.main(new String[] { "--mode", "PIDL", "--user", user,
+			"--password", password, "--dtl", downloadHost,
+			"-cache", localcache, "--oai", oaiHost, "--set",
+			oaiSet, "--timestamp", oaitimestamp, "--fedoraBase",
+			fedoraUrl, "--host", "http://api.localhost", "-list",
+			pidlist, "-namespace", "test" });
+	EllinetMain
+		.main(new String[] { "--mode", "DELE", "--user", user,
+			"--password", password, "--dtl", downloadHost,
+			"-cache", localcache, "--oai", oaiHost, "--set",
+			oaiSet, "--timestamp", oaitimestamp, "--fedoraBase",
+			fedoraUrl, "--host", "http://api.localhost", "-list",
+			pidlist, "-namespace", "test" });
 	File timestamp = new File(oaitimestamp);
 	timestamp.deleteOnExit();
 

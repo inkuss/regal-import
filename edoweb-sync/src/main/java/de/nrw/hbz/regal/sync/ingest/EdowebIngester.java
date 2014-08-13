@@ -175,6 +175,8 @@ public class EdowebIngester implements IngestInterface {
 	    updateFile(dtlBean);
 	} else if (usageType.compareTo(ObjectType.version.toString()) == 0) {
 	    updateVersion(dtlBean);
+	} else if (usageType.compareTo(ObjectType.issue.toString()) == 0) {
+	    updateIssue(dtlBean);
 	} else // if (usageType.compareTo(ObjectType.issue.toString()) == 0)
 	{
 	    updateFile(dtlBean);
@@ -215,7 +217,7 @@ public class EdowebIngester implements IngestInterface {
 	logger.info(pid + " Found " + num + " issues.");
 	for (DigitalEntity issue : issues) {
 	    logger.info("Part: " + (count++) + "/" + num);
-	    updateIssue(issue);
+	    updatePart(issue);
 	}
 
 	logger.info(pid + " " + "updated.\n");
@@ -240,19 +242,39 @@ public class EdowebIngester implements IngestInterface {
 	}
     }
 
-    private void updateIssue(DigitalEntity issue) {
+    private void initIssue(DigitalEntity dtlBean, String pid) {
 	try {
-
-	    issue.addTransformer("oaidc");
-	    issue.addTransformer("epicur");
-	    updateFile(issue);
-	    webclient.addUrn(issue.getPid(), namespace, "hbz:929:02");
-	    webclient.makeOaiSet(issue);
-
+	    dtlBean.addTransformer("oaidc");
+	    dtlBean.addTransformer("epicur");
+	    ObjectType t = ObjectType.issue;
+	    webclient.createResource(t, dtlBean);
+	    String metadata = "<" + pid
+		    + "> <http://purl.org/ontology/bibo/issue> \""
+		    + dtlBean.getLabel() + "\" .\n" + "<" + pid
+		    + "> <http://purl.org/dc/terms/title> \""
+		    + dtlBean.getLabel() + "\" .\n";
+	    webclient.setMetadata(dtlBean, metadata);
+	    webclient.addUrn(dtlBean.getPid(), namespace, "hbz:929:02");
+	    webclient.makeOaiSet(dtlBean);
 	} catch (Exception e) {
 	    logger.debug("", e);
 	}
+    }
 
+    private void updateIssue(DigitalEntity dtlBean) {
+	String pid = namespace + ":" + dtlBean.getPid();
+	logger.info(pid + " " + "Found eJournal issue.");
+	initIssue(dtlBean, pid);
+	Vector<DigitalEntity> parts = getParts(dtlBean);
+	int num = parts.size();
+	int count = 1;
+	logger.info(pid + " Found " + num + " issues.");
+	for (DigitalEntity part : parts) {
+	    logger.info("Part: " + (count++) + "/" + num);
+	    updatePart(part);
+	}
+
+	logger.info(pid + " " + "updated.\n");
     }
 
     private void updateFile(DigitalEntity dtlBean) {
@@ -371,7 +393,6 @@ public class EdowebIngester implements IngestInterface {
     private void initJournal(DigitalEntity dtlBean, String pid) {
 	try {
 	    logger.info(pid + " Found ejournal.");
-	    logger.info(dtlBean.toString());
 	    dtlBean.addTransformer("oaidc");
 	    dtlBean.addTransformer("epicur");
 	    webclient.createResource(ObjectType.journal, dtlBean);
