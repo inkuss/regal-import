@@ -64,7 +64,7 @@ public class EdowebDigitalEntityBuilder implements
     public DigitalEntity build(String location, String pid) {
 	DigitalEntity dtlDe = buildSimpleBean(location, pid);
 	if (dtlDe.getStream(StreamType.STRUCT_MAP) != null) {
-	    logger.info(pid + " is a mets object");
+	    logger.debug(pid + " is a mets object");
 	    dtlDe = prepareMetsStructure(dtlDe);
 	    dtlDe = addSiblings(dtlDe);
 	    dtlDe = addChildren(dtlDe);
