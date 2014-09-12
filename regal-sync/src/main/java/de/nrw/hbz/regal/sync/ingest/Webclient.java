@@ -312,6 +312,10 @@ public class Webclient {
 
     /**
      * init all known contentModels/Transformers
+     * 
+     * @param namespace
+     *            only content models for specific namespace will being
+     *            initialised
      */
     public void initContentModels(String namespace) {
 	WebResource resource = webclient.resource(endpoint
