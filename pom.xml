@@ -17,7 +17,7 @@
 		<integration.test.skip>false</integration.test.skip>
 		<es.version>1.1.0</es.version>
 		<commons.io.version>2.4</commons.io.version>
-		<regal.version>0.5.0-SNAPSHOT</regal.version>
+		<regal.version>0.6.0-SNAPSHOT</regal.version>
 		<fedora.version>3.7.1</fedora.version>
 		<jersey.version>1.18.1</jersey.version>
 	</properties>

@@ -1,10 +1,5 @@
 language: java
 jdk: oraclejdk8
-before_install:
-- git clone https://github.com/jschnasse/regal-api.git
-- cd regal-api
-- git checkout 0.6.0
-- mvn clean install -DskipTests
 install:
 - mvn clean install -e -DskipTests=true
 before_script:
