@@ -17,11 +17,11 @@
 package de.nrw.hbz.regal.sync.ingest;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.Vector;
 
 import javax.xml.XMLConstants;
@@ -59,6 +59,8 @@ public class EdowebDigitalEntityBuilder implements
 	    .getLogger(EdowebDigitalEntityBuilder.class);
     Map<String, DigitalEntity> filedIds2DigitalEntity = new HashMap<String, DigitalEntity>();
     Map<String, String> groupIds2FileIds = new HashMap<String, String>();
+
+    Map<String, List<String>> idmap = new HashMap<String, List<String>>();
 
     @Override
     public DigitalEntity build(String location, String pid) {
@@ -263,8 +265,8 @@ public class EdowebDigitalEntityBuilder implements
 
     private DigitalEntity createDigitalEntity(ObjectType type, String label,
 	    String parentPid, String location) {
-	String prefix = prefix(parentPid);
-	String pid = prefix + "-" + uuid();
+	String prefix = parentPid;
+	String pid = prefix + "-" + getId(prefix);
 	DigitalEntity entity = new DigitalEntity(location + File.separator
 		+ pid, pid);
 	entity.setLabel(label);
@@ -273,16 +275,28 @@ public class EdowebDigitalEntityBuilder implements
 	return entity;
     }
 
+    private String getId(String prefix) {
+	List<String> ids = null;
+	if (idmap.containsKey(prefix)) {
+	    ids = idmap.get(prefix);
+	} else {
+	    ids = new ArrayList<String>();
+	}
+	if (ids.size() >= Integer.MAX_VALUE) {
+	    throw new java.lang.ArrayIndexOutOfBoundsException(
+		    "We have serious problem here!");
+	}
+	String id = Integer.toString(ids.size());
+	ids.add(id);
+	idmap.put(prefix, ids);
+	return id;
+    }
+
     private String prefix(String pid) {
 	if (!pid.contains("-"))
 	    return pid;
 	else
 	    return pid.split("-")[0];
-    }
-
-    private String uuid() {
-	Long uuid = UUID.randomUUID().getMostSignificantBits();
-	return Long.toHexString(uuid);
     }
 
     private void loadDataStream(DigitalEntity dtlDe, Element root) {

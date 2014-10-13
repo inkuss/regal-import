@@ -226,7 +226,8 @@ public class Webclient {
 	if (ts != null && !ts.isEmpty())
 	    input.setTransformer(ts);
 	input.setType(type.toString());
-	input.setAccessScheme("private");
+	input.setAccessScheme("public");
+	input.setPublishScheme("public");
 	logger.info(pid + " type: " + input.getType());
 	if (ppid != null && !ppid.isEmpty()) {
 	    input.setParentPid(parentPid);
