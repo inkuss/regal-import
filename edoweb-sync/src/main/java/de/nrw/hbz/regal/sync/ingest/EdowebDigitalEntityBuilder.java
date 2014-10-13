@@ -219,9 +219,11 @@ public class EdowebDigitalEntityBuilder implements
 		    null);
 	    logger.debug("create volumes for: " + entity.getPid());
 	    for (Element volume : volumes) {
+
 		DigitalEntity v = createDigitalEntity(ObjectType.volume,
 			volume.getAttribute("LABEL"), dtlDe.getPid(),
 			dtlDe.getLocation());
+		v.setOrder(volume.getAttribute("ORDER"));
 		dtlDe.addRelated(v, DigitalEntityRelation.part_of.toString());
 		logger.debug("Create volume " + v.getPid());
 		List<Element> issues = XmlUtils.getElements("./div", volume,
@@ -233,7 +235,7 @@ public class EdowebDigitalEntityBuilder implements
 			DigitalEntity i = createDigitalEntity(ObjectType.issue,
 				issue.getAttribute("LABEL"), v.getPid(),
 				dtlDe.getLocation());
-
+			i.setOrder(volume.getAttribute("ORDER"));
 			logger.debug("Create issue " + i.getPid());
 			v.addRelated(i,
 				DigitalEntityRelation.part_of.toString());

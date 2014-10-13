@@ -138,7 +138,7 @@ public class Webclient {
 	try {
 	    String merge = appendMetadata(m, metadata);
 	    logger.debug("MERGE: " + metadata);
-	    updateMetadata(resource + "/metadata", merge);
+	    updateMetadata(resource + "/metadata", merge, "text/plain");
 	} catch (Exception e) {
 	    logger.error(dtlBean.getPid() + " " + e.getMessage(), e);
 	}
@@ -156,7 +156,7 @@ public class Webclient {
 	String pid = namespace + ":" + dtlBean.getPid();
 	String resource = endpoint + "/resource/" + pid;
 	try {
-	    updateMetadata(resource + "/metadata", metadata);
+	    updateMetadata(resource + "/metadata", metadata, "text/plain");
 	} catch (Exception e) {
 	    logger.error(pid + " " + e.getMessage(), e);
 	}
@@ -165,6 +165,31 @@ public class Webclient {
 
     private String appendMetadata(String m, String metadata) {
 	return m + "\n" + metadata;
+    }
+
+    /**
+     * @param dtlBean
+     *            the digitool entity
+     * @param parts
+     *            an orderered list of parts
+     */
+    public void createSeq(DigitalEntity dtlBean, List<String> parts) {
+	String pid = namespace + ":" + dtlBean.getPid();
+	String resource = endpoint + "/resource/" + pid;
+	try {
+	    StringBuffer json = new StringBuffer();
+	    json.append("[");
+	    for (String p : parts) {
+		json.append("\"" + namespace + ":" + p + "\",");
+	    }
+	    json.delete(json.length() - 1, json.length());
+	    json.append("]");
+	    logger.debug(json.toString());
+	    updateMetadata(resource + "/parts", json.toString(),
+		    "application/json");
+	} catch (Exception e) {
+	    logger.error(pid + " " + e.getMessage(), e);
+	}
     }
 
     /**
@@ -220,9 +245,10 @@ public class Webclient {
 	return metadataRes.get(String.class);
     }
 
-    private void updateMetadata(String url, String metadata) {
+    private void updateMetadata(String url, String metadata, String contentType) {
 	WebResource metadataRes = webclient.resource(url);
-	metadataRes.put(metadata);
+	logger.debug(url);
+	metadataRes.type(contentType).put(metadata);
     }
 
     private void updateDc(String url, DublinCoreData dc) {
@@ -337,4 +363,5 @@ public class Webclient {
 		+ snid);
 	resource.post();
     }
+
 }
