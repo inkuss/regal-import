@@ -292,13 +292,6 @@ public class EdowebDigitalEntityBuilder implements
 	return id;
     }
 
-    private String prefix(String pid) {
-	if (!pid.contains("-"))
-	    return pid;
-	else
-	    return pid.split("-")[0];
-    }
-
     private void loadDataStream(DigitalEntity dtlDe, Element root) {
 	Node streamRef = root.getElementsByTagName("stream_ref").item(0);
 	String filename = ((Element) streamRef)
