@@ -16,7 +16,9 @@
  */
 package de.nrw.hbz.regal.sync.ingest;
 
+import java.util.List;
 import java.util.Vector;
+import java.util.stream.Collectors;
 
 import models.ObjectType;
 
@@ -210,12 +212,18 @@ public class EdowebIngester implements IngestInterface {
     private void updateVolume(DigitalEntity dtlBean) {
 	String pid = namespace + ":" + dtlBean.getPid();
 	logger.info(pid + " " + "Found eJournal volume.");
-	initVolume(dtlBean, pid);
-	Vector<DigitalEntity> issues = getParts(dtlBean);
-	int num = issues.size();
+
+	List<DigitalEntity> list = getParts(dtlBean);
+	initVolume(
+		dtlBean,
+		pid,
+		list.stream().map((DigitalEntity d) -> d.getPid())
+			.collect(Collectors.toList()));
+
+	int num = list.size();
 	int count = 1;
 	logger.info(pid + " Found " + num + " issues.");
-	for (DigitalEntity issue : issues) {
+	for (DigitalEntity issue : list) {
 	    logger.info("Part: " + (count++) + "/" + num);
 	    updatePart(issue);
 	}
@@ -223,7 +231,8 @@ public class EdowebIngester implements IngestInterface {
 	logger.info(pid + " " + "updated.\n");
     }
 
-    private void initVolume(DigitalEntity dtlBean, String pid) {
+    private void initVolume(DigitalEntity dtlBean, String pid,
+	    List<String> parts) {
 	try {
 	    dtlBean.addTransformer("oaidc");
 	    dtlBean.addTransformer("epicur");
@@ -237,12 +246,13 @@ public class EdowebIngester implements IngestInterface {
 	    webclient.setMetadata(dtlBean, metadata);
 	    webclient.addUrn(dtlBean.getPid(), namespace, "hbz:929:02");
 	    webclient.makeOaiSet(dtlBean);
+	    webclient.createSeq(dtlBean, parts);
 	} catch (Exception e) {
 	    logger.debug("", e);
 	}
     }
 
-    private void initIssue(DigitalEntity dtlBean, String pid) {
+    private void initIssue(DigitalEntity dtlBean, String pid, List<String> parts) {
 	try {
 	    dtlBean.addTransformer("oaidc");
 	    dtlBean.addTransformer("epicur");
@@ -256,6 +266,7 @@ public class EdowebIngester implements IngestInterface {
 	    webclient.setMetadata(dtlBean, metadata);
 	    webclient.addUrn(dtlBean.getPid(), namespace, "hbz:929:02");
 	    webclient.makeOaiSet(dtlBean);
+	    webclient.createSeq(dtlBean, parts);
 	} catch (Exception e) {
 	    logger.debug("", e);
 	}
@@ -264,12 +275,17 @@ public class EdowebIngester implements IngestInterface {
     private void updateIssue(DigitalEntity dtlBean) {
 	String pid = namespace + ":" + dtlBean.getPid();
 	logger.info(pid + " " + "Found eJournal issue.");
-	initIssue(dtlBean, pid);
-	Vector<DigitalEntity> parts = getParts(dtlBean);
-	int num = parts.size();
+
+	List<DigitalEntity> list = getParts(dtlBean);
+	initIssue(
+		dtlBean,
+		pid,
+		list.stream().map((DigitalEntity d) -> d.getPid())
+			.collect(Collectors.toList()));
+	int num = list.size();
 	int count = 1;
 	logger.info(pid + " Found " + num + " issues.");
-	for (DigitalEntity part : parts) {
+	for (DigitalEntity part : list) {
 	    logger.info("Part: " + (count++) + "/" + num);
 	    updatePart(part);
 	}
@@ -317,7 +333,7 @@ public class EdowebIngester implements IngestInterface {
 	    // webclient.createResource(ObjectType.monograph, dtlBean);
 	}
 
-	Vector<DigitalEntity> list = getParts(dtlBean);
+	List<DigitalEntity> list = getParts(dtlBean);
 	int num = list.size();
 	int count = 1;
 	logger.info(pid + " Found " + num + " parts.");
@@ -359,7 +375,7 @@ public class EdowebIngester implements IngestInterface {
 	    logger.warn(e.getMessage());
 	}
 
-	Vector<DigitalEntity> list = getParts(dtlBean);
+	List<DigitalEntity> list = getParts(dtlBean);
 	int num = list.size();
 	int count = 1;
 	logger.info(pid + " Found " + num + " parts.");
@@ -375,8 +391,13 @@ public class EdowebIngester implements IngestInterface {
     private void updateJournal(DigitalEntity dtlBean) {
 	String pid = namespace + ":" + dtlBean.getPid();
 	try {
-	    initJournal(dtlBean, pid);
-	    Vector<DigitalEntity> list = getParts(dtlBean);
+	    List<DigitalEntity> list = getParts(dtlBean);
+	    initJournal(
+		    dtlBean,
+		    pid,
+		    list.stream().map((DigitalEntity d) -> d.getPid())
+			    .collect(Collectors.toList()));
+
 	    int numOfVols = list.size();
 	    int count = 1;
 	    logger.info(pid + " Found " + numOfVols + " parts.");
@@ -390,7 +411,8 @@ public class EdowebIngester implements IngestInterface {
 	}
     }
 
-    private void initJournal(DigitalEntity dtlBean, String pid) {
+    private void initJournal(DigitalEntity dtlBean, String pid,
+	    List<String> parts) {
 	try {
 	    logger.info(pid + " Found ejournal.");
 	    dtlBean.addTransformer("oaidc");
@@ -399,6 +421,7 @@ public class EdowebIngester implements IngestInterface {
 	    webclient.autoGenerateMetdata(dtlBean);
 	    webclient.addUrn(dtlBean.getPid(), namespace, "hbz:929:02");
 	    webclient.makeOaiSet(dtlBean);
+	    webclient.createSeq(dtlBean, parts);
 	} catch (Exception e) {
 	    logger.debug("", e);
 	}
@@ -414,7 +437,7 @@ public class EdowebIngester implements IngestInterface {
 	    webclient.autoGenerateMetdata(dtlBean);
 	    webclient.addUrn(dtlBean.getPid(), namespace, "hbz:929:02");
 	    webclient.makeOaiSet(dtlBean);
-	    Vector<DigitalEntity> parts = getParts(dtlBean);
+	    List<DigitalEntity> parts = getParts(dtlBean);
 	    int numOfVols = parts.size();
 	    logger.info(pid + " " + "Found " + numOfVols + " parts.");
 	    logger.info(pid + " " + "Will not update volumes.");
@@ -435,7 +458,7 @@ public class EdowebIngester implements IngestInterface {
 	    webclient.autoGenerateMetdata(dtlBean);
 	    webclient.addUrn(dtlBean.getPid(), namespace, "hbz:929:02");
 	    webclient.makeOaiSet(dtlBean);
-	    Vector<DigitalEntity> viewLinks = getParts(dtlBean);
+	    List<DigitalEntity> viewLinks = getParts(dtlBean);
 	    int numOfVersions = viewLinks.size();
 	    logger.info(pid + " " + "Found " + numOfVersions + " versions.");
 	    logger.info(pid + " " + "Will not update versions.");
@@ -446,14 +469,14 @@ public class EdowebIngester implements IngestInterface {
 
     }
 
-    private Vector<DigitalEntity> getParts(DigitalEntity dtlBean) {
-	Vector<DigitalEntity> links = new Vector<DigitalEntity>();
+    private List<DigitalEntity> getParts(DigitalEntity dtlBean) {
+	List<DigitalEntity> links = new Vector<DigitalEntity>();
 	for (RelatedDigitalEntity rel : dtlBean.getRelated()) {
 	    if (rel.relation
 		    .compareTo(DigitalEntityRelation.part_of.toString()) == 0)
 		links.add(rel.entity);
 	}
+	links.sort((d1, d2) -> d1.getOrder() - d2.getOrder());
 	return links;
     }
-
 }

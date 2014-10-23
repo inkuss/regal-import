@@ -23,6 +23,9 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Vector;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import archive.fedora.XmlUtils;
 
 /**
@@ -30,6 +33,7 @@ import archive.fedora.XmlUtils;
  * 
  */
 public class DigitalEntity {
+    final static Logger logger = LoggerFactory.getLogger(DigitalEntity.class);
 
     @SuppressWarnings({ "javadoc", "serial" })
     public class NoPidException extends RuntimeException {
@@ -56,6 +60,7 @@ public class DigitalEntity {
     private String parentPid;
     private String label = null;
     private String type;
+    private int order = -1;
 
     private File xml = null;
 
@@ -422,6 +427,22 @@ public class DigitalEntity {
 	    String curId = it.next();
 	    if (id.equals(curId))
 		it.remove();
+	}
+    }
+
+    public int getOrder() {
+	return order;
+    }
+
+    public void setOrder(int order) {
+	this.order = order;
+    }
+
+    public void setOrder(String o) {
+	try {
+	    order = Integer.parseInt(o);
+	} catch (Exception e) {
+	    logger.warn("Having problems with order of " + pid + " ", e);
 	}
     }
 
