@@ -248,20 +248,27 @@ public class Webclient {
 	return metadataRes.get(String.class);
     }
 
-    private void updateMetadata(String url, String metadata, String contentType) {
+    private void updateMetadata(String url, String metadata,
+	    String contentType, String charset) {
 	WebResource metadataRes = webclient.resource(url);
 	logger.debug(url);
-	metadataRes.type(contentType).put(metadata);
+	metadataRes.type(contentType + ";charset=" + charset).put(metadata);
+    }
+
+    private void updateMetadata(String url, String metadata, String contentType) {
+	updateMetadata(url, metadata, contentType, "utf-8");
     }
 
     private void updateDc(String url, DublinCoreData dc) {
+	String response = "";
 	try {
 	    WebResource resource = webclient.resource(url);
 	    logger.info("curl -XPUT -uedoweb-admin:admin " + resource + " -d'"
 		    + dc.toString() + "'");
-	    resource.type("application/json").put(dc.toString());
+	    response = resource.type("application/json").put(String.class,
+		    dc.toString());
 	} catch (Exception e) {
-	    logger.info("", e);
+	    logger.info(response, e);
 	}
     }
 
