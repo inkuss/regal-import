@@ -149,7 +149,6 @@ public class DigitalEntity {
     }
 
     /**
-     * TODO: WTF?
      * 
      * @return a xml representation of myself
      */
@@ -250,23 +249,6 @@ public class DigitalEntity {
 	related.add(relation);
     }
 
-    // /**
-    // * @param file
-    // * a file
-    // * @param mime
-    // * a mimetype, e.g. application/pdf
-    // * @param type
-    // * a stream type
-    // * @param md5Hash
-    // * a md5 hash to control transmission
-    // */
-    // public void addStream(File file, String mime, StreamType type,String
-    // fileId,
-    // String md5Hash) {
-    // streams.put(type, new Stream(file, mime, type, md5Hash));
-    //
-    // }
-
     /**
      * @param file
      *            a file
@@ -300,8 +282,6 @@ public class DigitalEntity {
     }
 
     /**
-     * TODO: Remove:Digitool Specific
-     * 
      * @return dc string if io fails
      */
     public String getDc() {
@@ -309,8 +289,6 @@ public class DigitalEntity {
     }
 
     /**
-     * TODO: Remove:Digitool Specific
-     * 
      * @return all related Objects with part_of relation
      */
     public Vector<DigitalEntity> getParts() {
@@ -430,14 +408,25 @@ public class DigitalEntity {
 	}
     }
 
+    /**
+     * @return the order attribute of the corresponding mets entry
+     */
     public int getOrder() {
 	return order;
     }
 
+    /**
+     * @param order
+     *            the order attribute of the corresponding mets entry
+     */
     public void setOrder(int order) {
 	this.order = order;
     }
 
+    /**
+     * @param o
+     *            the order attribute of the corresponding mets entry
+     */
     public void setOrder(String o) {
 	try {
 	    order = Integer.parseInt(o);
