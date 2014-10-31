@@ -106,7 +106,9 @@ public class Webclient {
 
     private void setIdentifier(DigitalEntity dtlBean) {
 	DublinCoreData dc = new DublinCoreData();
-	dc.setIdentifier(dtlBean.getIdentifier());
+	for (String id : dtlBean.getIdentifier()) {
+	    dc.addIdentifier(id, "");
+	}
 	String pid = namespace + ":" + dtlBean.getPid();
 	String resource = endpoint + "/resource/" + pid + "/dc";
 	updateDc(resource, dc);
