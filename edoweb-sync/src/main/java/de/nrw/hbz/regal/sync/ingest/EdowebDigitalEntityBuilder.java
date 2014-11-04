@@ -408,8 +408,9 @@ public class EdowebDigitalEntityBuilder implements
 		"//datafield[@tag='245']/subfield[@code='a']", root, null);
 	if (list != null && !list.isEmpty()) {
 	    return list.get(0).getTextContent();
+	} else {
+	    return root.getElementsByTagName("label").item(0).getTextContent();
 	}
-	return "data";
     }
 
     private Element getXmlRepresentation(final DigitalEntity dtlDe) {
