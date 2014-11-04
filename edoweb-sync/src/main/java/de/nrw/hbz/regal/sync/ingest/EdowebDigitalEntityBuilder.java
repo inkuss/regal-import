@@ -404,7 +404,12 @@ public class EdowebDigitalEntityBuilder implements
     }
 
     private String getLabel(Element root) {
-	return root.getElementsByTagName("label").item(0).getTextContent();
+	List<Element> list = XmlUtils.getElements(
+		"//datafield[@tag='245']/subfield[@code='a']", root, null);
+	if (list != null && !list.isEmpty()) {
+	    return list.get(0).getTextContent();
+	}
+	return "data";
     }
 
     private Element getXmlRepresentation(final DigitalEntity dtlDe) {
