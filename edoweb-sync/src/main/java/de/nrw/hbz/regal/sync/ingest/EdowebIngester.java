@@ -25,6 +25,7 @@ import models.ObjectType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import archive.fedora.RdfUtils;
 import de.nrw.hbz.regal.sync.extern.DigitalEntity;
 import de.nrw.hbz.regal.sync.extern.DigitalEntityRelation;
 import de.nrw.hbz.regal.sync.extern.RelatedDigitalEntity;
@@ -47,7 +48,7 @@ public class EdowebIngester implements IngestInterface {
 	this.namespace = ns;
 	this.host = host;
 	webclient = new Webclient(namespace, user, password, host);
-	webclient.initContentModels(namespace);
+	webclient.initContentModels("");
     }
 
     @Override
@@ -300,9 +301,10 @@ public class EdowebIngester implements IngestInterface {
 	    ObjectType t = ObjectType.file;
 	    webclient.createObject(dtlBean, t);
 	    logger.info(pid + " " + "Found file part.");
-	    String metadata = "<" + pid
-		    + "> <http://purl.org/dc/terms/title> \""
-		    + dtlBean.getLabel() + "\" .\n";
+
+	    String metadata = RdfUtils.addTriple(pid,
+		    "http://purl.org/dc/terms/title", dtlBean.getLabel(), true,
+		    new String());
 	    webclient.setMetadata(dtlBean, metadata);
 	    logger.info(pid + " " + "updated.\n");
 	} catch (IllegalArgumentException e) {
