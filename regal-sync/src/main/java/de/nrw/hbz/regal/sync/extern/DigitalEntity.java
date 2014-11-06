@@ -63,6 +63,9 @@ public class DigitalEntity {
     private int order = -1;
 
     private File xml = null;
+    private String createdBy;
+    private String importedFrom;
+    private String legacyId;
 
     /**
      * @param location
@@ -433,6 +436,48 @@ public class DigitalEntity {
 	} catch (Exception e) {
 	    logger.warn("Having problems with order of " + pid + " ", e);
 	}
+    }
+
+    /**
+     * @return createdBy
+     */
+    public String getCreatedBy() {
+	return createdBy;
+    }
+
+    /**
+     * @return importedFrom
+     */
+    public String getImportedFrom() {
+	return importedFrom;
+    }
+
+    /**
+     * @return legacyId
+     */
+    public String getLegacId() {
+	return legacyId;
+    }
+
+    /**
+     * @param legacyId
+     */
+    public void setLegacyId(String legacyId) {
+	this.legacyId = legacyId;
+    }
+
+    /**
+     * @param createdBy
+     */
+    public void setCreatedBy(String createdBy) {
+	this.createdBy = createdBy;
+    }
+
+    /**
+     * @param importedFrom
+     */
+    public void setImportedFrom(String importedFrom) {
+	this.importedFrom = importedFrom;
     }
 
 }

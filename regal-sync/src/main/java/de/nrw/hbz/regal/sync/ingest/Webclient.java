@@ -230,6 +230,9 @@ public class Webclient {
 	input.setType(type.toString());
 	input.setAccessScheme("public");
 	input.setPublishScheme("public");
+	input.setCreatedBy(dtlBean.getCreatedBy());
+	input.setImportedFrom(dtlBean.getImportedFrom());
+	input.setLegacyId(dtlBean.getLegacId());
 	logger.info(pid + " type: " + input.getType());
 	if (ppid != null && !ppid.isEmpty()) {
 	    input.setParentPid(parentPid);
