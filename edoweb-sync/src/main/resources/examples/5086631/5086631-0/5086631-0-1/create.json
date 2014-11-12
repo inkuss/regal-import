@@ -1,0 +1,23 @@
+{
+    "publishScheme": "public",
+    "accessScheme": "public",
+    "transformer": [
+        {
+            "id": "oaidc",
+            "contentModelPID": "CM:oaidc",
+            "serviceDefinitionPID": "CM:oaidcServiceDefinition",
+            "serviceDeploymentPID": "CM:oaidcServiceDeployment"
+        },
+        {
+            "id": "epicur",
+            "contentModelPID": "CM:epicur",
+            "serviceDefinitionPID": "CM:epicurServiceDefinition",
+            "serviceDeploymentPID": "CM:epicurServiceDeployment"
+        }
+    ],
+    "parentPid": "edoweb:5086631-0",
+    "importedFrom": "",
+    "createdBy": "",
+    "legacyId": "",
+    "type": "issue"
+}

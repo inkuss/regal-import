@@ -94,4 +94,8 @@ public class OpusIngester implements IngestInterface {
 	webclient.delete(pid.substring(pid.lastIndexOf(':') + 1));
     }
 
+    @Override
+    public void test() {
+	throw new RuntimeException("unimplemented");
+    }
 }

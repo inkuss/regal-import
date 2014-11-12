@@ -1,4 +1,8 @@
+*~
 target
 bin/**
 tmp/**
 bin
+**/pidl.txt
+**/test.properties
+

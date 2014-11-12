@@ -1,0 +1,9 @@
+{
+	"type": "file",
+	"publishScheme": "public",
+    "accessScheme": "public",
+    "importedFrom": "http://klio.hbz-nrw.de:1801/webclient/DeliveryManager?pid=1750717&custom_att_2=default_viewer",
+    "createdBy": "digitool",
+    "legacyId": "HT014988659",
+    "parentPid": "edoweb:1750717"
+}

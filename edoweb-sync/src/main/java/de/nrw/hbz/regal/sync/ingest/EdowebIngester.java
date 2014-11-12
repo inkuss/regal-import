@@ -30,6 +30,7 @@ import de.nrw.hbz.regal.sync.extern.DigitalEntity;
 import de.nrw.hbz.regal.sync.extern.DigitalEntityRelation;
 import de.nrw.hbz.regal.sync.extern.RelatedDigitalEntity;
 import de.nrw.hbz.regal.sync.extern.StreamType;
+import de.nrw.hbz.regal.sync.test.EdowebTestSuite;
 
 /**
  * @author Jan Schnasse, schnasse@hbz-nrw.de
@@ -318,6 +319,7 @@ public class EdowebIngester implements IngestInterface {
 	try {
 	    dtlBean.addTransformer("oaidc");
 	    dtlBean.addTransformer("epicur");
+	    dtlBean.addTransformer("aleph");
 	    webclient.createResource(ObjectType.webpage, dtlBean);
 	    webclient.autoGenerateMetdata(dtlBean);
 	    webclient.addUrn(dtlBean.getPid(), namespace, "hbz:929:02");
@@ -358,6 +360,7 @@ public class EdowebIngester implements IngestInterface {
 	try {
 	    dtlBean.addTransformer("oaidc");
 	    dtlBean.addTransformer("epicur");
+	    dtlBean.addTransformer("aleph");
 	    webclient.createResource(ObjectType.monograph, dtlBean);
 	    webclient.autoGenerateMetdata(dtlBean);
 	    webclient.addUrn(dtlBean.getPid(), namespace, "hbz:929:02");
@@ -419,6 +422,7 @@ public class EdowebIngester implements IngestInterface {
 	    logger.info(pid + " Found ejournal.");
 	    dtlBean.addTransformer("oaidc");
 	    dtlBean.addTransformer("epicur");
+	    dtlBean.addTransformer("aleph");
 	    webclient.createResource(ObjectType.journal, dtlBean);
 	    webclient.autoGenerateMetdata(dtlBean);
 	    webclient.addUrn(dtlBean.getPid(), namespace, "hbz:929:02");
@@ -435,6 +439,7 @@ public class EdowebIngester implements IngestInterface {
 	    logger.info(pid + " Found ejournal.");
 	    dtlBean.addTransformer("oaidc");
 	    dtlBean.addTransformer("epicur");
+	    dtlBean.addTransformer("aleph");
 	    webclient.createResource(ObjectType.journal, dtlBean);
 	    webclient.autoGenerateMetdata(dtlBean);
 	    webclient.addUrn(dtlBean.getPid(), namespace, "hbz:929:02");
@@ -456,6 +461,7 @@ public class EdowebIngester implements IngestInterface {
 	    logger.info(pid + " Found webpage.");
 	    dtlBean.addTransformer("oaidc");
 	    dtlBean.addTransformer("epicur");
+	    dtlBean.addTransformer("aleph");
 	    webclient.createResource(ObjectType.webpage, dtlBean);
 	    webclient.autoGenerateMetdata(dtlBean);
 	    webclient.addUrn(dtlBean.getPid(), namespace, "hbz:929:02");
@@ -480,5 +486,15 @@ public class EdowebIngester implements IngestInterface {
 	}
 	links.sort((d1, d2) -> d1.getOrder() - d2.getOrder());
 	return links;
+    }
+
+    @Override
+    public void test() {
+	EdowebTestSuite tests = new EdowebTestSuite();
+	tests.createObject();
+	tests.updateObject();
+	tests.deleteObject();
+	tests.urnResolving();
+	tests.oaiProviding();
     }
 }

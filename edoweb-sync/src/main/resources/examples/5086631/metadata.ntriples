@@ -1,0 +1,49 @@
+<edoweb:5086631> <http://purl.org/lobid/lv#hbzID> "HT015268999"^^<http://www.w3.org/2001/XMLSchema#string> .
+<edoweb:5086631> <http://purl.org/lobid/lv#zdbID> "2384045-6"^^<http://www.w3.org/2001/XMLSchema#string> .
+<edoweb:5086631> <http://www.w3.org/2002/07/owl#sameAs> <http://ld.zdb-services.de/resource/2384045-6> .
+<edoweb:5086631> <http://www.w3.org/2002/07/owl#sameAs> <http://lobid.org/resource/ZDB2384045-6> .
+<edoweb:5086631> <http://www.w3.org/2007/05/powder-s#describedby> <edoweb:5086631/about> .
+<edoweb:5086631/about> <http://xmlns.com/foaf/0.1/primaryTopic> <edoweb:5086631> .
+<http://d-nb.info/gnd/2010925-8> <http://d-nb.info/standards/elementset/gnd#preferredName> "Fussball-Verband Mittelrhein"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://d-nb.info/gnd/2010925-8> <http://d-nb.info/standards/elementset/gnd#preferredNameForTheCorporateBody> "Fussball-Verband Mittelrhein"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://dewey.info/class/070/> <http://www.w3.org/2004/02/skos/core#prefLabel> "Publizistische Medien, Journalismus, Verlagswesen"@de .
+<http://dewey.info/class/070/> <http://www.w3.org/2004/02/skos/core#prefLabel> "News media, journalism & publishing"@en .
+<http://dewey.info/class/793/> <http://www.w3.org/2004/02/skos/core#prefLabel> "Spiele und Freizeitaktivit\u00E4ten f\u00FCr drinnen"@de .
+<http://dewey.info/class/793/> <http://www.w3.org/2004/02/skos/core#prefLabel> "Indoor games & amusements"@en .
+<http://dewey.info/class/796/> <http://www.w3.org/2004/02/skos/core#prefLabel> "Sportarten, Sportspiele"@de .
+<http://dewey.info/class/796/> <http://www.w3.org/2004/02/skos/core#prefLabel> "Athletic & outdoor sports & games"@en .
+<edoweb:5086631> <http://purl.org/dc/elements/1.1/publisher> "K\u00F6lnsport Verl. & Werbeagentur"^^<http://www.w3.org/2001/XMLSchema#string> .
+<edoweb:5086631> <http://purl.org/dc/terms/bibliographicCitation> "Auch per E-Mail-Subskription erh\u00E4ltlich"^^<http://www.w3.org/2001/XMLSchema#string> .
+<edoweb:5086631> <http://purl.org/dc/terms/contributor> <http://d-nb.info/gnd/2010925-8> .
+<edoweb:5086631> <http://purl.org/dc/terms/hasVersion> <http://digitool.hbz-nrw.de:1801/webclient/DeliveryManager?pid=5086962&custom_att_2=simple_viewer> .
+<edoweb:5086631> <http://purl.org/dc/terms/hasVersion> <http://digitool.hbz-nrw.de:1801/webclient/DeliveryManager?pid=5086982&custom_att_2=simple_viewer> .
+<edoweb:5086631> <http://purl.org/dc/terms/hasVersion> <http://digitool.hbz-nrw.de:1801/webclient/DeliveryManager?pid=5087016&custom_att_2=simple_viewer> .
+<edoweb:5086631> <http://purl.org/dc/terms/issued> "2007"^^<http://www.w3.org/2001/XMLSchema#string> .
+<edoweb:5086631> <http://purl.org/dc/terms/issued> "2007 - 2009"^^<http://www.w3.org/2001/XMLSchema#string> .
+<edoweb:5086631> <http://purl.org/dc/terms/language> <http://id.loc.gov/vocabulary/iso639-2/deu> .
+<edoweb:5086631> <http://purl.org/dc/terms/medium> <http://rdvocab.info/termList/RDACarrierType/1010> .
+<edoweb:5086631> <http://purl.org/dc/terms/medium> <http://rdvocab.info/termList/RDACarrierType/1018> .
+<edoweb:5086631> <http://purl.org/dc/terms/subject> <http://dewey.info/class/070/> .
+<edoweb:5086631> <http://purl.org/dc/terms/subject> <http://dewey.info/class/793/> .
+<edoweb:5086631> <http://purl.org/dc/terms/subject> <http://dewey.info/class/796/> .
+<edoweb:5086631> <http://purl.org/dc/terms/title> "Fu\u00DFball AM Mittelrhein / Die amtlichen Mitteilungen des Fu\u00DFball-Verbandes Mittelrhein e.V."^^<http://www.w3.org/2001/XMLSchema#string> .
+<edoweb:5086631> <http://purl.org/lobid/lv#fulltextOnline> <http://digitool.hbz-nrw.de:1801/webclient/DeliveryManager?pid=5086962&custom_att_2=simple_viewer> .
+<edoweb:5086631> <http://purl.org/lobid/lv#fulltextOnline> <http://digitool.hbz-nrw.de:1801/webclient/DeliveryManager?pid=5086982&custom_att_2=simple_viewer> .
+<edoweb:5086631> <http://purl.org/lobid/lv#fulltextOnline> <http://digitool.hbz-nrw.de:1801/webclient/DeliveryManager?pid=5087016&custom_att_2=simple_viewer> .
+<edoweb:5086631> <http://purl.org/lobid/lv#zdbID> "ZDB2384045-6"^^<http://www.w3.org/2001/XMLSchema#string> .
+<edoweb:5086631> <http://purl.org/vocab/frbr/core#exemplar> <http://lobid.org/item/ZDB2384045-6:DE-929:> .
+<edoweb:5086631> <http://purl.org/vocab/frbr/core#exemplar> <http://lobid.org/item/ZDB2384045-6:DE-Kn41:> .
+<edoweb:5086631> <http://rdvocab.info/Elements/otherTitleInformation> "Die amtlichen Mitteilungen des Fu\u00DFball-Verbandes Mittelrhein e.V."^^<http://www.w3.org/2001/XMLSchema#string> .
+<edoweb:5086631> <http://rdvocab.info/Elements/placeOfPublication> "K\u00F6ln"^^<http://www.w3.org/2001/XMLSchema#string> .
+<edoweb:5086631> <http://rdvocab.info/Elements/publicationStatement> "K\u00F6ln; K\u00F6lnsport Verl. & Werbeagentur; 2007"^^<http://www.w3.org/2001/XMLSchema#string> .
+<edoweb:5086631> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/dc/terms/BibliographicResource> .
+<edoweb:5086631> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/lobid/lv#Miscellaneous> .
+<edoweb:5086631> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Collection> .
+<edoweb:5086631> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Journal> .
+<edoweb:5086631> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Periodical> .
+<edoweb:5086631> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/vocab/frbr/core#Manifestation> .
+<edoweb:5086631> <http://www.w3.org/2002/07/owl#sameAs> <http://hub.culturegraph.org/resource/ZDB-ZDB2384045-6> .
+<edoweb:5086631> <http://www.w3.org/2002/07/owl#sameAs> <edoweb:5086631> .
+<edoweb:5086631> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://193.30.112.134/F/?func=find-c&ccl_term=IDN%3DHT015268999> .
+<edoweb:5086631> <http://www.umbel.org/specifications/vocabulary#isLike> <http://lobid.org/resource/HT015268999> .
+<edoweb:5086631> <http://purl.org/lobid/lv#urn> "urn:nbn:de:hbz:929:02-edoweb:50866319" .

@@ -1,0 +1,22 @@
+{
+	"type": "monograph",
+    "publishScheme": "public",
+    "transformer": [
+        {
+            "id": "oaidc",
+            "contentModelPID": "CM:oaidc",
+            "serviceDefinitionPID": "CM:oaidcServiceDefinition",
+            "serviceDeploymentPID": "CM:oaidcServiceDeployment"
+        },
+        {
+            "id": "epicur",
+            "contentModelPID": "CM:epicur",
+            "serviceDefinitionPID": "CM:epicurServiceDefinition",
+            "serviceDeploymentPID": "CM:epicurServiceDeployment"
+        }
+    ],
+    "importedFrom": "http://klio.hbz-nrw.de:1801/webclient/DeliveryManager?pid=1750717&custom_att_2=default_viewer",
+    "legacyId": "HT014988659",
+    "accessScheme": "public",
+    "createdBy": "digitool"
+}
