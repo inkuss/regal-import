@@ -79,7 +79,7 @@ public class EdowebTest {
 	pidlist = Thread.currentThread().getContextClassLoader()
 		.getResource(pidlist).toString().substring(5);
 	EdowebMain
-		.main(new String[] { "--mode", "PIDL", "--user", user,
+		.main(new String[] { "--mode", "TEST", "--user", user,
 			"--password", password, "--dtl", downloadHost,
 			"-cache", localcache, "--oai", oaiHost, "--set",
 			oaiSet, "--timestamp", oaitimestamp, "--fedoraBase",

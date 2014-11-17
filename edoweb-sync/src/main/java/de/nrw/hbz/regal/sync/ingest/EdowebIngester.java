@@ -491,10 +491,6 @@ public class EdowebIngester implements IngestInterface {
     @Override
     public void test() {
 	EdowebTestSuite tests = new EdowebTestSuite();
-	tests.createObject();
-	tests.updateObject();
-	tests.deleteObject();
-	tests.urnResolving();
-	tests.oaiProviding();
+	tests.objecttest(new String[] { "1750717", "1750717-1" });
     }
 }
