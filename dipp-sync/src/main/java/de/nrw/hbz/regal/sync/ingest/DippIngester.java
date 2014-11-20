@@ -157,4 +157,9 @@ public class DippIngester implements IngestInterface {
     public void delete(String pid) {
 	webclient.delete(pid.substring(pid.lastIndexOf(':') + 1));
     }
+
+    @Override
+    public void test() {
+	throw new RuntimeException("unimplemented");
+    }
 }

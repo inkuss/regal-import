@@ -231,6 +231,8 @@ public class Syncer {
 
 	    dele(pidListFile);
 
+	} else if (mode.compareTo("TEST") == 0) {
+	    ingester.test();
 	}
 
     }

@@ -1,0 +1,6 @@
+{
+    "publishScheme": "public",
+    "transformer": ["oaidc","epicur"],
+    "contentType": "journal",
+    "accessScheme": "public"
+}

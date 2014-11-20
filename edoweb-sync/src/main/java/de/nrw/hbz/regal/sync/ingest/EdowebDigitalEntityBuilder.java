@@ -106,10 +106,14 @@ public class EdowebDigitalEntityBuilder implements
 	dtlDe.setLabel(getLabel(root));
 	loadMetadataStreams(dtlDe, root);
 	setType(dtlDe);
+	dtlDe.setImportedFrom("http://klio.hbz-nrw.de:1801/webclient/DeliveryManager?pid="
+		+ pid + "&custom_att_2=default_viewer");
+	dtlDe.setCreatedBy("digitool");
 	try {
 	    setCatalogId(dtlDe);
+	    logger.debug("p2a: " + pid + "," + dtlDe.getLegacyId());
 	} catch (CatalogIdNotFoundException e) {
-	    logger.debug("", e);
+	    logger.debug(pid + "has no catalog id");
 	}
 	loadDataStream(dtlDe, root);
 	linkToParent(dtlDe);
@@ -139,6 +143,7 @@ public class EdowebDigitalEntityBuilder implements
 	    }
 	    String id = nodes.item(0).getTextContent();
 	    dtlDe.addIdentifier(id);
+	    dtlDe.setLegacyId(id);
 	    // logger.debug(dtlDe.getPid() + " add id " + id);
 	} catch (Exception e) {
 	    throw new CatalogIdNotFoundException(e);

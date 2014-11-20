@@ -17,7 +17,6 @@ package de.nrw.hbz.regal;
  *
  */
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Properties;
@@ -80,24 +79,24 @@ public class EdowebTest {
 	pidlist = Thread.currentThread().getContextClassLoader()
 		.getResource(pidlist).toString().substring(5);
 	EdowebMain
-		.main(new String[] { "--mode", "PIDL", "--user", user,
+		.main(new String[] { "--mode", "TEST", "--user", user,
 			"--password", password, "--dtl", downloadHost,
 			"-cache", localcache, "--oai", oaiHost, "--set",
 			oaiSet, "--timestamp", oaitimestamp, "--fedoraBase",
 			fedoraUrl, "--host", "http://localhost:9000", "-list",
 			pidlist, "-namespace", "test" });
-	EdowebMain
-		.main(new String[] { "--mode", "DELE", "--user", user,
-			"--password", password, "--dtl", downloadHost,
-			"-cache", localcache, "--oai", oaiHost, "--set",
-			oaiSet, "--timestamp", oaitimestamp, "--fedoraBase",
-			fedoraUrl, "--host", "http://api.localhost", "-list",
-			pidlist, "-namespace", "test" });
-	File timestamp = new File(oaitimestamp);
-	timestamp.deleteOnExit();
-
-	File cache = new File(localcache);
-	cache.deleteOnExit();
+	// EdowebMain
+	// .main(new String[] { "--mode", "DELE", "--user", user,
+	// "--password", password, "--dtl", downloadHost,
+	// "-cache", localcache, "--oai", oaiHost, "--set",
+	// oaiSet, "--timestamp", oaitimestamp, "--fedoraBase",
+	// fedoraUrl, "--host", "http://api.localhost", "-list",
+	// pidlist, "-namespace", "test" });
+	// File timestamp = new File(oaitimestamp);
+	// timestamp.deleteOnExit();
+	//
+	// File cache = new File(localcache);
+	// cache.deleteOnExit();
 
     }
 

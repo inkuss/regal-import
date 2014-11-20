@@ -1,0 +1,11 @@
+{
+	"contentType": "file",
+    "publishScheme": "public",
+    "accessScheme": "public",
+    "parentPid" : "test:1750717",
+    "isDescribedBy":{
+    "createdBy": "digitool",
+    "importedFrom": "http://klio.hbz-nrw.de:1801/webclient/DeliveryManager?pid=1750717&custom_att_2=default_viewer",
+    "legacyId": "HT014988659"
+    }
+}

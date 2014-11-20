@@ -1,0 +1,7 @@
+{
+    "publishScheme": "public",
+    "transformer": ["oaidc","epicur"],
+    "contentType": "volume",
+    "accessScheme": "public",
+        "parentPid": "5086613"
+}

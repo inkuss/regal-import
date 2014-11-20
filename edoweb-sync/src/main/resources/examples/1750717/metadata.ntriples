@@ -1,0 +1,35 @@
+<http://d-nb.info/gnd/2144892-9> <http://d-nb.info/standards/elementset/gnd#preferredName> "Rheinland-Pfalz / Ministerium f\u00FCr Umwelt und Forsten"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://d-nb.info/gnd/2144892-9> <http://d-nb.info/standards/elementset/gnd#preferredNameForTheCorporateBody> "Rheinland-Pfalz / Ministerium f\u00FCr Umwelt und Forsten"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://dewey.info/class/620/> <http://www.w3.org/2004/02/skos/core#prefLabel> "Ingenieurwissenschaften und zugeordnete T\u00E4tigkeitenn"@de .
+<http://dewey.info/class/620/> <http://www.w3.org/2004/02/skos/core#prefLabel> "Engineering & allied operations"@en .
+<edoweb:1750717> <http://iflastandards.info/ns/isbd/elements/P1053> "577 S. : graph. Darst."^^<http://www.w3.org/2001/XMLSchema#string> .
+<edoweb:1750717> <http://purl.org/dc/terms/contributor> <http://d-nb.info/gnd/2144892-9> .
+<edoweb:1750717> <http://purl.org/dc/terms/hasVersion> <http://digitool.hbz-nrw.de:1801/webclient/DeliveryManager?pid=1750718&custom_att_2=simple_viewer> .
+<edoweb:1750717> <http://purl.org/dc/terms/hasVersion> <http://digitool.hbz-nrw.de:1801/webclient/DeliveryManager?pid=1997569&custom_att_2=simple_viewer> .
+<edoweb:1750717> <http://purl.org/dc/terms/isPartOf> <http://lobid.org/resource/Edoweb> .
+<edoweb:1750717> <http://purl.org/dc/terms/isPartOf> <http://lobid.org/resource/RPB> .
+<edoweb:1750717> <http://purl.org/dc/terms/issued> "2004"^^<http://www.w3.org/2001/XMLSchema#string> .
+<edoweb:1750717> <http://purl.org/dc/terms/language> <http://id.loc.gov/vocabulary/iso639-2/deu> .
+<edoweb:1750717> <http://purl.org/dc/terms/medium> <http://rdvocab.info/termList/RDACarrierType/1010> .
+<edoweb:1750717> <http://purl.org/dc/terms/medium> <http://rdvocab.info/termList/RDACarrierType/1018> .
+<edoweb:1750717> <http://purl.org/dc/terms/subject> <http://dewey.info/class/620/> .
+<edoweb:1750717> <http://purl.org/dc/terms/subject> <http://purl.org/lobid/rpb#n582000> .
+<edoweb:1750717> <http://purl.org/dc/terms/title> "Studie zur Weiterentwicklung der energetischen Verwertung von Biomasse in Rheinland-Pfalz"^^<http://www.w3.org/2001/XMLSchema#string> .
+<edoweb:1750717> <http://purl.org/lobid/lv#fulltextOnline> <http://digitool.hbz-nrw.de:1801/webclient/DeliveryManager?pid=1750718&custom_att_2=simple_viewer> .
+<edoweb:1750717> <http://purl.org/lobid/lv#fulltextOnline> <http://digitool.hbz-nrw.de:1801/webclient/DeliveryManager?pid=1997569&custom_att_2=simple_viewer> .
+<edoweb:1750717> <http://purl.org/lobid/lv#hbzID> "HT014988659"^^<http://www.w3.org/2001/XMLSchema#string> .
+<edoweb:1750717> <http://rdvocab.info/Elements/otherTitleInformation> "Mai 2001 - April 2004 ; Abschlussbericht"^^<http://www.w3.org/2001/XMLSchema#string> .
+<edoweb:1750717> <http://rdvocab.info/Elements/placeOfPublication> "[Mainz]"^^<http://www.w3.org/2001/XMLSchema#string> .
+<edoweb:1750717> <http://rdvocab.info/Elements/publicationStatement> "[Mainz]; 2004"^^<http://www.w3.org/2001/XMLSchema#string> .
+<edoweb:1750717> <http://rdvocab.info/Elements/statementOfResponsibility> "durchgef. vom IfaS - Institut f\u00FCr angewandtes Stromstoffmanagement"^^<http://www.w3.org/2001/XMLSchema#string> .
+<edoweb:1750717> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://data.archiveshub.ac.uk/def/ArchivalResource> .
+<edoweb:1750717> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/dc/terms/BibliographicResource> .
+<edoweb:1750717> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Book> .
+<edoweb:1750717> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Thesis> .
+<edoweb:1750717> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/vocab/frbr/core#Manifestation> .
+<edoweb:1750717> <http://www.w3.org/2002/07/owl#sameAs> <http://hub.culturegraph.org/resource/HBZ-HT014988659> .
+<edoweb:1750717> <http://www.w3.org/2007/05/powder-s#describedby> <edoweb:1750717/about> .
+<edoweb:1750717> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://193.30.112.134/F/?func=find-c&ccl_term=IDN%3DHT014988659> .
+<edoweb:1750717/about> <http://xmlns.com/foaf/0.1/primaryTopic> <edoweb:1750717> .
+<edoweb:1750717> <http://www.umbel.org/specifications/vocabulary#isLike> <http://lobid.org/resource/HT014988659> .
+<edoweb:1750717> <http://purl.org/lobid/lv#urn> "urn:nbn:de:hbz:929:02-edoweb:17507179" .

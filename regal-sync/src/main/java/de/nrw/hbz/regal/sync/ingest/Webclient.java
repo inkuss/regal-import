@@ -96,7 +96,6 @@ public class Webclient {
     public void autoGenerateMetdata(DigitalEntity dtlBean) {
 	try {
 	    setIdentifier(dtlBean);
-
 	    lobidify(dtlBean);
 	} catch (Exception e) {
 	    logger.error(dtlBean.getPid() + " " + e.getMessage(), e);
@@ -109,7 +108,11 @@ public class Webclient {
 	for (String id : dtlBean.getIdentifier()) {
 	    dc.addIdentifier(id, "");
 	}
-	String pid = namespace + ":" + dtlBean.getPid();
+	addIdentifier(dc, dtlBean.getPid(), namespace);
+    }
+
+    public void addIdentifier(DublinCoreData dc, String id, String namespace) {
+	String pid = namespace + ":" + id;
 	String resource = endpoint + "/resource/" + pid + "/dc";
 	updateDc(resource, dc);
     }
@@ -205,7 +208,7 @@ public class Webclient {
 	String resource = endpoint + "/resource/" + pid;
 	String data = resource + "/data";
 	createResource(type, dtlBean);
-	updateData(data, dtlBean);
+	updateData(dtlBean);
 	updateLabel(resource, dtlBean);
     }
 
@@ -221,19 +224,26 @@ public class Webclient {
 	String ppid = dtlBean.getParentPid();
 	logger.info(pid + " is child of " + dtlBean.getParentPid());
 	String parentPid = namespace + ":" + ppid;
-	String resourceUrl = endpoint + "/resource/" + pid;
-	WebResource resource = webclient.resource(resourceUrl);
 	RegalObject input = new RegalObject();
 	List<String> ts = dtlBean.getTransformer();
 	if (ts != null && !ts.isEmpty())
 	    input.setTransformer(ts);
-	input.setType(type.toString());
+	input.setContentType(type.toString());
 	input.setAccessScheme("public");
 	input.setPublishScheme("public");
-	logger.info(pid + " type: " + input.getType());
+	input.getIsDescribedBy().setCreatedBy(dtlBean.getCreatedBy());
+	input.getIsDescribedBy().setImportedFrom(dtlBean.getImportedFrom());
+	input.getIsDescribedBy().setLegacyId(dtlBean.getLegacId());
+	logger.info(pid + " type: " + input.getContentType());
 	if (ppid != null && !ppid.isEmpty()) {
 	    input.setParentPid(parentPid);
 	}
+	createResource(input, pid);
+    }
+
+    public void createResource(RegalObject input, String pid) {
+	String resourceUrl = endpoint + "/resource/" + pid;
+	WebResource resource = webclient.resource(resourceUrl);
 	try {
 	    logger.info("curl -XPUT -uedoweb-admin:admin -d'" + input + "' "
 		    + resource);
@@ -280,16 +290,28 @@ public class Webclient {
 	updateDc(url + "/dc", dc);
     }
 
-    private void updateData(String url, DigitalEntity dtlBean) {
+    private void updateData(DigitalEntity dtlBean) {
 	String pid = namespace + ":" + dtlBean.getPid();
-	WebResource resource = webclient.resource(url);
 	Stream dataStream = dtlBean.getStream(StreamType.DATA);
+	File data = dataStream.getFile();
+	String mimeType = dataStream.getMimeType();
 	try {
-	    logger.info(pid + " Update data: " + dataStream.getMimeType() + " "
-		    + dataStream.getFile().getAbsolutePath());
-	    File uploadFile = dataStream.getFile();
+	    updateData(pid, data, mimeType);
+	} catch (UniformInterfaceException e) {
+	    logger.error(pid + " " + e.getMessage(), e);
+	} catch (Exception e) {
+	    logger.error(pid + " " + e.getMessage(), e);
+	}
+    }
+
+    public void updateData(String pid, File data, String mimeType) {
+	try {
+	    WebResource resource = webclient.resource(endpoint + "/resource/"
+		    + pid + "/data");
+	    logger.info(pid + " Update data: " + mimeType + " "
+		    + data.getAbsolutePath());
 	    FormDataMultiPart form = new FormDataMultiPart();
-	    FileDataBodyPart body = new FileDataBodyPart("data", uploadFile);
+	    FileDataBodyPart body = new FileDataBodyPart("data", data);
 	    form.bodyPart(body);
 	    resource.type(MediaType.MULTIPART_FORM_DATA_TYPE).put(form);
 	} catch (UniformInterfaceException e) {
@@ -297,20 +319,21 @@ public class Webclient {
 	} catch (Exception e) {
 	    logger.error(pid + " " + e.getMessage(), e);
 	}
-
     }
 
     private void lobidify(DigitalEntity dtlBean) {
 	String pid = namespace + ":" + dtlBean.getPid();
-	WebResource lobid = webclient.resource(endpoint + "/utils/lobidify/"
-		+ namespace + ":" + dtlBean.getPid());
-	try
-
-	{
-	    lobid.type("text/plain").post();
+	try {
+	    lobidify(pid);
 	} catch (UniformInterfaceException e) {
 	    logger.warn(pid + " fetching lobid-data failed", e);
 	}
+    }
+
+    public void lobidify(String pid) {
+	WebResource lobid = webclient.resource(endpoint + "/utils/lobidify/"
+		+ pid);
+	lobid.type("text/plain").post();
     }
 
     /**
@@ -336,14 +359,17 @@ public class Webclient {
     public void makeOaiSet(DigitalEntity dtlBean) {
 
 	String pid = namespace + ":" + dtlBean.getPid();
-	WebResource oaiSet = webclient.resource(endpoint + "/resource/"
-		+ namespace + ":" + dtlBean.getPid() + "/oaisets");
 	try {
-	    oaiSet.post();
+	    makeOaiSet(pid);
 	} catch (UniformInterfaceException e) {
 	    logger.warn(pid + " " + "Not oai provided! " + e.getMessage(), e);
 	}
+    }
 
+    public void makeOaiSet(String pid) {
+	WebResource oaiSet = webclient.resource(endpoint + "/resource/" + pid
+		+ "/oaisets");
+	oaiSet.post();
     }
 
     /**
@@ -372,6 +398,20 @@ public class Webclient {
 		+ "/utils/addUrn?id=" + id + "&namespace=" + ns + "&snid="
 		+ snid);
 	resource.post();
+    }
+
+    public String readResource(String pid) {
+	String resourceUrl = endpoint + "/resource/" + pid;
+	WebResource resource = webclient.resource(resourceUrl);
+	try {
+	    logger.info("curl -XGET -uedoweb-admin:admin " + resource);
+	    String response = resource.type("application/json")
+		    .accept("application/json").get(String.class);
+	    return response;
+
+	} catch (Exception e) {
+	    throw new RuntimeException("", e);
+	}
     }
 
 }

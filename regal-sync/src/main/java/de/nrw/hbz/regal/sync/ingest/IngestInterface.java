@@ -62,4 +62,9 @@ public interface IngestInterface {
     public abstract void init(String host, String user, String password,
 	    String ns);
 
+    /**
+     * Gives the ingester a chance to test a newly created version
+     */
+    public abstract void test();
+
 }
