@@ -1,0 +1,7 @@
+{
+	"parentPid": "edoweb:5086631-0-0",
+    "publishScheme": "public",
+    "transformer": ["oaidc","epicur"],
+    "contentType": "file",
+    "accessScheme": "public",
+}

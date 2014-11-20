@@ -86,7 +86,6 @@ public class EdowebTestSuite {
 	    RegalObject output = read(str2stream(client.readResource(namespace
 		    + ":" + id)));
 	    Assert.assertEquals(input, output);
-
 	    findData(id);
 	} catch (Exception e) {
 	    throw new RuntimeException("Can`t read in " + id, e);
@@ -135,13 +134,8 @@ public class EdowebTestSuite {
 	} catch (Exception e) {
 	    logger.info("", e);
 	}
-	// for (String id : ids) {
-	// try {
-	// deleteObject(id);
-	// } catch (Exception e) {
-	// Logger.info("", e);
-	// }
-	// }
+
+	deleteObject(ids[0]);
 
     }
 

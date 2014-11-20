@@ -1,10 +1,6 @@
 {
     "publishScheme": "public",
     "accessScheme": "public",
-    "transformer": [ ],
     "parentPid": "edoweb:5086631-1-0",
-    "importedFrom": "",
-    "createdBy": "",
-    "legacyId": "",
     "type": "file"
 }

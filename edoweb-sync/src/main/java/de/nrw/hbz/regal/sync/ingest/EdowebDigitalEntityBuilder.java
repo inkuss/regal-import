@@ -111,8 +111,9 @@ public class EdowebDigitalEntityBuilder implements
 	dtlDe.setCreatedBy("digitool");
 	try {
 	    setCatalogId(dtlDe);
+	    logger.debug("p2a: " + pid + "," + dtlDe.getLegacyId());
 	} catch (CatalogIdNotFoundException e) {
-	    logger.debug("", e);
+	    logger.debug(pid + "has no catalog id");
 	}
 	loadDataStream(dtlDe, root);
 	linkToParent(dtlDe);
