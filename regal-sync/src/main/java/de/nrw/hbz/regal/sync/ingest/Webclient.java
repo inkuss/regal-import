@@ -111,6 +111,14 @@ public class Webclient {
 	addIdentifier(dc, dtlBean.getPid(), namespace);
     }
 
+    /**
+     * @param dc
+     *            dublin core data
+     * @param id
+     *            id of the object withoug namespace
+     * @param namespace
+     *            the namespace
+     */
     public void addIdentifier(DublinCoreData dc, String id, String namespace) {
 	String pid = namespace + ":" + id;
 	String resource = endpoint + "/resource/" + pid + "/dc";
@@ -206,7 +214,6 @@ public class Webclient {
     public void createObject(DigitalEntity dtlBean, ObjectType type) {
 	String pid = namespace + ":" + dtlBean.getPid();
 	String resource = endpoint + "/resource/" + pid;
-	String data = resource + "/data";
 	createResource(type, dtlBean);
 	updateData(dtlBean);
 	updateLabel(resource, dtlBean);
@@ -241,6 +248,12 @@ public class Webclient {
 	createResource(input, pid);
     }
 
+    /**
+     * @param input
+     *            RegalObject
+     * @param pid
+     *            the namespace qualified pid
+     */
     public void createResource(RegalObject input, String pid) {
 	String resourceUrl = endpoint + "/resource/" + pid;
 	WebResource resource = webclient.resource(resourceUrl);
@@ -304,6 +317,14 @@ public class Webclient {
 	}
     }
 
+    /**
+     * @param pid
+     *            the namespace qualified pid
+     * @param data
+     *            data to upload
+     * @param mimeType
+     *            mimetype of data
+     */
     public void updateData(String pid, File data, String mimeType) {
 	try {
 	    WebResource resource = webclient.resource(endpoint + "/resource/"
@@ -330,6 +351,12 @@ public class Webclient {
 	}
     }
 
+    /**
+     * Calls the lobidify RPC of regal-api to get metadata for the object
+     * 
+     * @param pid
+     *            a namespace qualified pid
+     */
     public void lobidify(String pid) {
 	WebResource lobid = webclient.resource(endpoint + "/utils/lobidify/"
 		+ pid);
@@ -366,6 +393,12 @@ public class Webclient {
 	}
     }
 
+    /**
+     * Creates oai sets for the object
+     * 
+     * @param pid
+     *            a namespace qualified pid
+     */
     public void makeOaiSet(String pid) {
 	WebResource oaiSet = webclient.resource(endpoint + "/resource/" + pid
 		+ "/oaisets");
@@ -400,6 +433,11 @@ public class Webclient {
 	resource.post();
     }
 
+    /**
+     * @param pid
+     *            a namespace qualified pid
+     * @return json representation of resource
+     */
     public String readResource(String pid) {
 	String resourceUrl = endpoint + "/resource/" + pid;
 	WebResource resource = webclient.resource(resourceUrl);

@@ -341,9 +341,6 @@ public class EdowebDigitalEntityBuilder implements
 	    } else if (type.compareTo("changehistory_md") == 0) {
 		setXmlStream(dtlDe, item, StreamType.HIST);
 	    } else if (type.compareTo("marc") == 0) {
-		/*
-		 * FIXME : Workaround for some bug.
-		 */
 		setMarcStream(dtlDe, item, StreamType.MARC);
 	    } else if (type.compareTo("metsHdr") == 0) {
 		setXmlStream(dtlDe, item, StreamType.METS_HDR);
@@ -356,6 +353,7 @@ public class EdowebDigitalEntityBuilder implements
 	}
     }
 
+    @SuppressWarnings("deprecation")
     private void setXmlStream(DigitalEntity dtlDe, Node item, StreamType type) {
 	try {
 	    File file = new File(dtlDe.getLocation() + File.separator + "."
@@ -365,14 +363,11 @@ public class EdowebDigitalEntityBuilder implements
 	    String md5Hash = getMd5(stream);
 	    dtlDe.addStream(stream, "application/xml", type, null, md5Hash);
 	} catch (Exception e) {
-	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
     }
 
-    /*
-     * FIXME : Workaround for some bug.
-     */
+    @SuppressWarnings("deprecation")
     private void setMarcStream(DigitalEntity dtlDe, Node item, StreamType type) {
 	try {
 	    File file = new File(dtlDe.getLocation() + File.separator + "."
@@ -381,7 +376,6 @@ public class EdowebDigitalEntityBuilder implements
 	    String md5Hash = getMd5(stream);
 	    dtlDe.addStream(stream, "application/xml", type, null, md5Hash);
 	} catch (Exception e) {
-	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
     }
@@ -396,9 +390,7 @@ public class EdowebDigitalEntityBuilder implements
 		.getElementsByTagName("record").item(0);
 	marc.setAttribute("xmlns", "http://www.loc.gov/MARC21/slim");
 	String xmlStr = XmlUtils.nodeToString(marc);
-	/*
-	 * FIXME : Workaround for some bug.
-	 */
+
 	xmlStr = xmlStr.replaceAll("nam  2200000 u 4500",
 		"00000    a2200000   4500");
 	return xmlStr;
@@ -483,7 +475,6 @@ public class EdowebDigitalEntityBuilder implements
 			b.setUsageType(usageType);
 			addToTree(dtlDe, b);
 		    } catch (Exception e) {
-			// TODO
 			e.printStackTrace();
 		    }
 		}
@@ -527,7 +518,6 @@ public class EdowebDigitalEntityBuilder implements
 				DigitalEntityRelation.part_of.toString());
 
 		    } catch (Exception e) {
-			// TODO
 			e.printStackTrace();
 		    }
 		}
