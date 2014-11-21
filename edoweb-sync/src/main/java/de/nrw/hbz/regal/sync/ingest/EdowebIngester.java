@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 import models.ObjectType;
 
+import org.openrdf.rio.RDFFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -305,7 +306,7 @@ public class EdowebIngester implements IngestInterface {
 
 	    String metadata = RdfUtils.addTriple(pid,
 		    "http://purl.org/dc/terms/title", dtlBean.getLabel(), true,
-		    new String());
+		    new String(), RDFFormat.NTRIPLES);
 	    webclient.setMetadata(dtlBean, metadata);
 	    logger.info(pid + " " + "updated.\n");
 	} catch (IllegalArgumentException e) {
