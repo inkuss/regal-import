@@ -1,6 +1,13 @@
 {
     "publishScheme": "public",
-    "transformer": ["oaidc","epicur"],
+    "accessScheme": "public",
+    "transformer": [
+        "oaidc"
+    ],
     "contentType": "journal",
-    "accessScheme": "public"
+    "isDescribedBy":{
+    "createdBy": "digitool",
+    "importedFrom": "http://klio.hbz-nrw.de:1801/webclient/DeliveryManager?pid=5086631&custom_att_2=default_viewer",
+    "legacyId": "HT015268999"
+    }
 }

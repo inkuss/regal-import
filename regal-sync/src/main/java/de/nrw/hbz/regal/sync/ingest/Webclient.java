@@ -18,6 +18,7 @@ package de.nrw.hbz.regal.sync.ingest;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.ws.rs.core.MediaType;
 
@@ -28,6 +29,7 @@ import models.RegalObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sun.jersey.api.client.AsyncWebResource;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
@@ -111,6 +113,14 @@ public class Webclient {
 	addIdentifier(dc, dtlBean.getPid(), namespace);
     }
 
+    /**
+     * @param dc
+     *            dublin core data
+     * @param id
+     *            id of the object withoug namespace
+     * @param namespace
+     *            the namespace
+     */
     public void addIdentifier(DublinCoreData dc, String id, String namespace) {
 	String pid = namespace + ":" + id;
 	String resource = endpoint + "/resource/" + pid + "/dc";
@@ -206,7 +216,6 @@ public class Webclient {
     public void createObject(DigitalEntity dtlBean, ObjectType type) {
 	String pid = namespace + ":" + dtlBean.getPid();
 	String resource = endpoint + "/resource/" + pid;
-	String data = resource + "/data";
 	createResource(type, dtlBean);
 	updateData(dtlBean);
 	updateLabel(resource, dtlBean);
@@ -241,6 +250,12 @@ public class Webclient {
 	createResource(input, pid);
     }
 
+    /**
+     * @param input
+     *            RegalObject
+     * @param pid
+     *            the namespace qualified pid
+     */
     public void createResource(RegalObject input, String pid) {
 	String resourceUrl = endpoint + "/resource/" + pid;
 	WebResource resource = webclient.resource(resourceUrl);
@@ -304,6 +319,14 @@ public class Webclient {
 	}
     }
 
+    /**
+     * @param pid
+     *            the namespace qualified pid
+     * @param data
+     *            data to upload
+     * @param mimeType
+     *            mimetype of data
+     */
     public void updateData(String pid, File data, String mimeType) {
 	try {
 	    WebResource resource = webclient.resource(endpoint + "/resource/"
@@ -330,6 +353,12 @@ public class Webclient {
 	}
     }
 
+    /**
+     * Calls the lobidify RPC of regal-api to get metadata for the object
+     * 
+     * @param pid
+     *            a namespace qualified pid
+     */
     public void lobidify(String pid) {
 	WebResource lobid = webclient.resource(endpoint + "/utils/lobidify/"
 		+ pid);
@@ -338,18 +367,30 @@ public class Webclient {
 
     /**
      * 
-     * @param p
-     *            A pid to delete
+     * @param id
+     *            A id without namespace to delete
      */
-    public void delete(String p) {
-	String pid = namespace + ":" + p;
-
-	WebResource delete = webclient.resource(endpoint + "/resource/" + pid);
+    public void deleteId(String id) {
+	String pid = namespace + ":" + id;
 	try {
-	    delete.delete();
-	} catch (UniformInterfaceException e) {
+	    delete(pid);
+	} catch (Exception e) {
 	    logger.info(pid + " Can't delete!" + e.getMessage(), e);
 	}
+    }
+
+    /**
+     * @param pid
+     *            a pid with namespace
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
+    public void delete(String pid) throws InterruptedException,
+	    ExecutionException {
+	AsyncWebResource delete = webclient.asyncResource(endpoint
+		+ "/resource/" + pid);
+	String response = delete.delete(String.class).get();
+	System.out.println(response.toString());
     }
 
     /**
@@ -366,6 +407,12 @@ public class Webclient {
 	}
     }
 
+    /**
+     * Creates oai sets for the object
+     * 
+     * @param pid
+     *            a namespace qualified pid
+     */
     public void makeOaiSet(String pid) {
 	WebResource oaiSet = webclient.resource(endpoint + "/resource/" + pid
 		+ "/oaisets");
@@ -400,8 +447,32 @@ public class Webclient {
 	resource.post();
     }
 
+    /**
+     * @param pid
+     *            a namespace qualified pid
+     * @return json representation of resource
+     */
     public String readResource(String pid) {
 	String resourceUrl = endpoint + "/resource/" + pid;
+	WebResource resource = webclient.resource(resourceUrl);
+	try {
+	    logger.info("curl -XGET -uedoweb-admin:admin " + resource);
+	    String response = resource.type("application/json")
+		    .accept("application/json").get(String.class);
+	    return response;
+
+	} catch (Exception e) {
+	    throw new RuntimeException("", e);
+	}
+    }
+
+    /**
+     * @param pid
+     *            a namespace qualified pid
+     * @return json representation of resource
+     */
+    public String readResourceIndex(String pid) {
+	String resourceUrl = endpoint + "/resourceIndex/" + pid;
 	WebResource resource = webclient.resource(resourceUrl);
 	try {
 	    logger.info("curl -XGET -uedoweb-admin:admin " + resource);

@@ -480,6 +480,9 @@ public class DigitalEntity {
 	this.importedFrom = importedFrom;
     }
 
+    /**
+     * @return an id used for this object in a legacy system
+     */
     public String getLegacyId() {
 	return legacyId;
     }

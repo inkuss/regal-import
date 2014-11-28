@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 import models.ObjectType;
 
+import org.openrdf.rio.RDFFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -166,7 +167,7 @@ public class EdowebIngester implements IngestInterface {
 
     @Override
     public void delete(String p) {
-	webclient.delete(p);
+	webclient.deleteId(p);
 
     }
 
@@ -191,8 +192,8 @@ public class EdowebIngester implements IngestInterface {
 	String pid = namespace + ":" + dtlBean.getPid();
 	try {
 	    ObjectType t = ObjectType.version;
-	    dtlBean.addTransformer("oaidc");
-	    dtlBean.addTransformer("epicur");
+	    // dtlBean.addTransformer("oaidc");
+	    // dtlBean.addTransformer("epicur");
 	    webclient.createObject(dtlBean, t);
 	    logger.info(pid + " " + "Found webpage version.");
 
@@ -236,8 +237,8 @@ public class EdowebIngester implements IngestInterface {
     private void initVolume(DigitalEntity dtlBean, String pid,
 	    List<String> parts) {
 	try {
-	    dtlBean.addTransformer("oaidc");
-	    dtlBean.addTransformer("epicur");
+	    // dtlBean.addTransformer("oaidc");
+	    // dtlBean.addTransformer("epicur");
 	    ObjectType t = ObjectType.volume;
 	    webclient.createResource(t, dtlBean);
 	    String metadata = "<" + pid
@@ -256,8 +257,8 @@ public class EdowebIngester implements IngestInterface {
 
     private void initIssue(DigitalEntity dtlBean, String pid, List<String> parts) {
 	try {
-	    dtlBean.addTransformer("oaidc");
-	    dtlBean.addTransformer("epicur");
+	    // dtlBean.addTransformer("oaidc");
+	    // dtlBean.addTransformer("epicur");
 	    ObjectType t = ObjectType.issue;
 	    webclient.createResource(t, dtlBean);
 	    String metadata = "<" + pid
@@ -305,7 +306,7 @@ public class EdowebIngester implements IngestInterface {
 
 	    String metadata = RdfUtils.addTriple(pid,
 		    "http://purl.org/dc/terms/title", dtlBean.getLabel(), true,
-		    new String());
+		    new String(), RDFFormat.NTRIPLES);
 	    webclient.setMetadata(dtlBean, metadata);
 	    logger.info(pid + " " + "updated.\n");
 	} catch (IllegalArgumentException e) {
@@ -317,9 +318,9 @@ public class EdowebIngester implements IngestInterface {
     private void updateWebpage(DigitalEntity dtlBean) {
 	String pid = namespace + ":" + dtlBean.getPid();
 	try {
-	    dtlBean.addTransformer("oaidc");
-	    dtlBean.addTransformer("epicur");
-	    dtlBean.addTransformer("aleph");
+	    // dtlBean.addTransformer("oaidc");
+	    // dtlBean.addTransformer("epicur");
+	    // dtlBean.addTransformer("aleph");
 	    webclient.createResource(ObjectType.webpage, dtlBean);
 	    webclient.autoGenerateMetdata(dtlBean);
 	    webclient.addUrn(dtlBean.getPid(), namespace, "hbz:929:02");
@@ -358,9 +359,9 @@ public class EdowebIngester implements IngestInterface {
 
 	String pid = namespace + ":" + dtlBean.getPid();
 	try {
-	    dtlBean.addTransformer("oaidc");
-	    dtlBean.addTransformer("epicur");
-	    dtlBean.addTransformer("aleph");
+	    // dtlBean.addTransformer("oaidc");
+	    // dtlBean.addTransformer("epicur");
+	    // dtlBean.addTransformer("aleph");
 	    webclient.createResource(ObjectType.monograph, dtlBean);
 	    webclient.autoGenerateMetdata(dtlBean);
 	    webclient.addUrn(dtlBean.getPid(), namespace, "hbz:929:02");
@@ -369,8 +370,8 @@ public class EdowebIngester implements IngestInterface {
 		    .compareTo("application/pdf") == 0) {
 		dtlBean.setParentPid(dtlBean.getPid());
 		dtlBean.setPid(dtlBean.getPid() + "-1");
-		dtlBean.removeTransformer("oaidc");
-		dtlBean.removeTransformer("epicur");
+		// dtlBean.removeTransformer("oaidc");
+		// dtlBean.removeTransformer("epicur");
 		updateFile(dtlBean);
 	    }
 	} catch (IllegalArgumentException e) {
@@ -420,9 +421,9 @@ public class EdowebIngester implements IngestInterface {
 	    List<String> parts) {
 	try {
 	    logger.info(pid + " Found ejournal.");
-	    dtlBean.addTransformer("oaidc");
-	    dtlBean.addTransformer("epicur");
-	    dtlBean.addTransformer("aleph");
+	    // dtlBean.addTransformer("oaidc");
+	    // dtlBean.addTransformer("epicur");
+	    // dtlBean.addTransformer("aleph");
 	    webclient.createResource(ObjectType.journal, dtlBean);
 	    webclient.autoGenerateMetdata(dtlBean);
 	    webclient.addUrn(dtlBean.getPid(), namespace, "hbz:929:02");
@@ -437,9 +438,9 @@ public class EdowebIngester implements IngestInterface {
 	String pid = namespace + ":" + dtlBean.getPid();
 	try {
 	    logger.info(pid + " Found ejournal.");
-	    dtlBean.addTransformer("oaidc");
-	    dtlBean.addTransformer("epicur");
-	    dtlBean.addTransformer("aleph");
+	    // dtlBean.addTransformer("oaidc");
+	    // dtlBean.addTransformer("epicur");
+	    // dtlBean.addTransformer("aleph");
 	    webclient.createResource(ObjectType.journal, dtlBean);
 	    webclient.autoGenerateMetdata(dtlBean);
 	    webclient.addUrn(dtlBean.getPid(), namespace, "hbz:929:02");
@@ -459,9 +460,9 @@ public class EdowebIngester implements IngestInterface {
 	String pid = namespace + ":" + dtlBean.getPid();
 	try {
 	    logger.info(pid + " Found webpage.");
-	    dtlBean.addTransformer("oaidc");
-	    dtlBean.addTransformer("epicur");
-	    dtlBean.addTransformer("aleph");
+	    // dtlBean.addTransformer("oaidc");
+	    // dtlBean.addTransformer("epicur");
+	    // dtlBean.addTransformer("aleph");
 	    webclient.createResource(ObjectType.webpage, dtlBean);
 	    webclient.autoGenerateMetdata(dtlBean);
 	    webclient.addUrn(dtlBean.getPid(), namespace, "hbz:929:02");
@@ -492,9 +493,8 @@ public class EdowebIngester implements IngestInterface {
     public void test() {
 	EdowebTestSuite tests = new EdowebTestSuite();
 	tests.objecttest(new String[] { "1750717", "1750717-1" });
-	// tests.objecttest(new String[] { "5086631", "5086631-0",
-	// "5086631-0-0",
-	// "5086634", "5086631-0-1", "5086631-0-2", "5086631-1",
-	// "5086631-1-0" });
+	tests.objecttest(new String[] { "5086631", "5086631-0", "5086631-0-0",
+		"5086634", "5086631-0-1", "5086631-0-2", "5086631-1",
+		"5086631-1-0" });
     }
 }
