@@ -2,6 +2,9 @@
 	"contentType": "file",
     "publishScheme": "public",
     "accessScheme": "public",
+    "transformer": [
+        "oaidc"
+    ],
     "parentPid" : "test:1750717",
     "isDescribedBy":{
     "createdBy": "digitool",

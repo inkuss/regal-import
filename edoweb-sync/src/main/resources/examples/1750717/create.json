@@ -3,7 +3,7 @@
     "publishScheme": "public",
     "accessScheme": "public",
     "transformer": [
-        "oaidc", "epicur"
+        "oaidc"
     ],
     "isDescribedBy":{
     "createdBy": "digitool",
