@@ -18,6 +18,7 @@ package de.nrw.hbz.regal.sync.ingest;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.ws.rs.core.MediaType;
 
@@ -28,6 +29,7 @@ import models.RegalObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sun.jersey.api.client.AsyncWebResource;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
@@ -365,18 +367,30 @@ public class Webclient {
 
     /**
      * 
-     * @param p
-     *            A pid to delete
+     * @param id
+     *            A id without namespace to delete
      */
-    public void delete(String p) {
-	String pid = namespace + ":" + p;
-
-	WebResource delete = webclient.resource(endpoint + "/resource/" + pid);
+    public void deleteId(String id) {
+	String pid = namespace + ":" + id;
 	try {
-	    delete.delete();
-	} catch (UniformInterfaceException e) {
+	    delete(pid);
+	} catch (Exception e) {
 	    logger.info(pid + " Can't delete!" + e.getMessage(), e);
 	}
+    }
+
+    /**
+     * @param pid
+     *            a pid with namespace
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
+    public void delete(String pid) throws InterruptedException,
+	    ExecutionException {
+	AsyncWebResource delete = webclient.asyncResource(endpoint
+		+ "/resource/" + pid);
+	String response = delete.delete(String.class).get();
+	System.out.println(response.toString());
     }
 
     /**
@@ -440,6 +454,25 @@ public class Webclient {
      */
     public String readResource(String pid) {
 	String resourceUrl = endpoint + "/resource/" + pid;
+	WebResource resource = webclient.resource(resourceUrl);
+	try {
+	    logger.info("curl -XGET -uedoweb-admin:admin " + resource);
+	    String response = resource.type("application/json")
+		    .accept("application/json").get(String.class);
+	    return response;
+
+	} catch (Exception e) {
+	    throw new RuntimeException("", e);
+	}
+    }
+
+    /**
+     * @param pid
+     *            a namespace qualified pid
+     * @return json representation of resource
+     */
+    public String readResourceIndex(String pid) {
+	String resourceUrl = endpoint + "/resourceIndex/" + pid;
 	WebResource resource = webclient.resource(resourceUrl);
 	try {
 	    logger.info("curl -XGET -uedoweb-admin:admin " + resource);
