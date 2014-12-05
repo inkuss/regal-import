@@ -35,6 +35,7 @@ import de.nrw.hbz.regal.sync.extern.DigitalEntity;
 import de.nrw.hbz.regal.sync.extern.DigitalEntityBuilderInterface;
 import de.nrw.hbz.regal.sync.ingest.DownloaderInterface;
 import de.nrw.hbz.regal.sync.ingest.IngestInterface;
+import de.nrw.hbz.regal.sync.ingest.KeystoreConf;
 
 /**
  * @author Jan Schnasse, schnasse@hbz-nrw.de
@@ -81,6 +82,7 @@ public class Syncer {
     private String pidListFile;
     private Options options;
     private String namespace;
+    KeystoreConf kconf = null;
 
     /**
      * @param ingester
@@ -133,7 +135,10 @@ public class Syncer {
 		"list",
 		true,
 		"Path to a file with a newline separated pidlist. Only needed in combination with mode PIDL and DELE.");
-
+	options.addOption("keystoreLocation", "keystoreLocation", true,
+		"Specify a keystore for ssl");
+	options.addOption("keystorePassword", "keystorePassword", true,
+		"Specify a keystore password for ssl");
     }
 
     /**
@@ -205,8 +210,10 @@ public class Syncer {
 
 	harvester = new de.nrw.hbz.regal.PIDReporter(oai, timestamp);
 	downloader.init(dtl, cache);
-	ingester.init(host, user, password, namespace);
-
+	KeystoreConf kconf = new KeystoreConf();
+	kconf.location = config.getOptionValue("keystoreLocation");
+	kconf.password = config.getOptionValue("keystorePassword");
+	ingester.init(host, user, password, namespace, kconf);
     }
 
     private void showHelp(Options opts) {

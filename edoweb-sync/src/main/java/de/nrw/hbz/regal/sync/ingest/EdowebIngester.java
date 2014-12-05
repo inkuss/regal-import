@@ -46,11 +46,12 @@ public class EdowebIngester implements IngestInterface {
     String host = null;
 
     @Override
-    public void init(String host, String user, String password, String ns) {
+    public void init(String host, String user, String password, String ns,
+	    KeystoreConf kconf) {
 	this.namespace = ns;
 	this.host = host;
-	webclient = new Webclient(namespace, user, password, host);
-	webclient.initContentModels("");
+	webclient = new Webclient(namespace, user, password, host, kconf);
+	webclient.initContentModels(namespace);
     }
 
     @Override

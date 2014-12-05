@@ -57,10 +57,13 @@ public interface IngestInterface {
      *            the users password
      * @param ns
      *            the namespace to operate on
+     * @param keystore
+     *            if keystore is not null, the connection will use a secured
+     *            channel
      * 
      */
     public abstract void init(String host, String user, String password,
-	    String ns);
+	    String ns, KeystoreConf keystore);
 
     /**
      * Gives the ingester a chance to test a newly created version

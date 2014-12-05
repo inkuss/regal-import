@@ -18,9 +18,10 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import de.nrw.hbz.regal.sync.ingest.KeystoreConf;
 import de.nrw.hbz.regal.sync.ingest.Webclient;
 
-@SuppressWarnings("javadoc")
+@SuppressWarnings({ "javadoc", "rawtypes", "unchecked" })
 public class EdowebTestSuite {
     final static Logger logger = LoggerFactory.getLogger(EdowebTestSuite.class);
     Properties properties = new Properties();
@@ -29,10 +30,11 @@ public class EdowebTestSuite {
     String user = null;
     String password = null;
     String host = null;
+    KeystoreConf kconf = null;
 
     public EdowebTestSuite() {
 	initProperties();
-	client = new Webclient(namespace, user, password, "http://" + host);
+	client = new Webclient(namespace, user, password, host, kconf);
     }
 
     private void initProperties() {
@@ -43,6 +45,15 @@ public class EdowebTestSuite {
 	    user = getProperty("user");
 	    password = getProperty("password");
 	    host = getProperty("host");
+	    String kloc = getProperty("keystoreLocation");
+	    String kpasswd = getProperty("keystorePassword");
+	    if (kloc != null && kpasswd != null) {
+		kconf = new KeystoreConf();
+		kconf.location = kloc;
+		kconf.password = kpasswd;
+		System.out.println(kconf.location + " " + kconf.password);
+	    }
+
 	} catch (Exception e) {
 	    throw new RuntimeException("", e);
 	}

@@ -44,6 +44,8 @@ public class KolaTest {
     String pidFule;
     String downloadHost;
     String localcache;
+    private String keystoreLocation;
+    private String keystorePassword;
 
     /*
      * namespace=ubm password=schnasse user=jan
@@ -71,6 +73,8 @@ public class KolaTest {
 	fromScratch = "true";
 	downloadHost = properties.getProperty("piddownloader.server");
 	localcache = properties.getProperty("piddownloader.downloadLocation");
+	keystoreLocation = properties.getProperty("keystoreLocation");
+	keystorePassword = properties.getProperty("keystorePassword");
     }
 
     @Test
@@ -90,12 +94,16 @@ public class KolaTest {
 		"--password", password, "--dtl", downloadHost, "-cache",
 		localcache, "--oai", oaiHost, "--set", oaiSet, "--timestamp",
 		oaitimestamp, "--fedoraBase", fedoraUrl, "--host",
-		"http://localhost", "-list", pidlist, "-namespace", "test" });
+		"api.localhost", "-list", pidlist, "-namespace", "test",
+		"-keystoreLocation", keystoreLocation, "-keystorePassword",
+		keystorePassword });
 	OpusMain.main(new String[] { "--mode", "DELE", "--user", user,
 		"--password", password, "--dtl", downloadHost, "-cache",
 		localcache, "--oai", oaiHost, "--set", oaiSet, "--timestamp",
 		oaitimestamp, "--fedoraBase", fedoraUrl, "--host",
-		"http://localhost", "-list", pidlist, "-namespace", "test" });
+		"api.localhost", "-list", pidlist, "-namespace", "test",
+		"-keystoreLocation", keystoreLocation, "-keystorePassword",
+		keystorePassword });
 	File timestamp = new File(oaitimestamp);
 	timestamp.deleteOnExit();
 

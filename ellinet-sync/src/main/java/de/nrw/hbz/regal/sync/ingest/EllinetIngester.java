@@ -30,10 +30,11 @@ public class EllinetIngester extends EdowebIngester {
     final static Logger logger = LoggerFactory.getLogger(EllinetIngester.class);
 
     @Override
-    public void init(String host, String user, String password, String ns) {
+    public void init(String host, String user, String password, String ns,
+	    KeystoreConf kconf) {
 	this.namespace = ns;
 	this.host = host;
-	webclient = new Webclient(namespace, user, password, host);
+	webclient = new Webclient(namespace, user, password, host, kconf);
 	webclient.initContentModels(namespace);
     }
 
