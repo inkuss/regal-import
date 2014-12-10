@@ -17,9 +17,13 @@
 package de.nrw.hbz.regal.sync.ingest;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.security.KeyStore;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
 import javax.ws.rs.core.MediaType;
 
 import models.DublinCoreData;
@@ -37,6 +41,7 @@ import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.client.apache.config.DefaultApacheHttpClientConfig;
+import com.sun.jersey.client.urlconnection.HTTPSProperties;
 import com.sun.jersey.multipart.FormDataMultiPart;
 import com.sun.jersey.multipart.file.FileDataBodyPart;
 import com.sun.jersey.multipart.impl.MultiPartWriter;
@@ -53,8 +58,8 @@ import de.nrw.hbz.regal.sync.extern.StreamType;
  * 
  */
 public class Webclient {
-    final static Logger logger = LoggerFactory.getLogger(Webclient.class);
 
+    final static Logger logger = LoggerFactory.getLogger(Webclient.class);
     String namespace = null;
     String endpoint = null;
     String host = null;
@@ -68,10 +73,13 @@ public class Webclient {
      * @param password
      *            a password for the webapi
      * @param host
-     *            the host of the api. it is assumed that the regal-api is
-     *            available under host:8080/api
+     *            the host of the api.
+     * @param kconf
+     *            config for keystore, if null the client will go against
+     *            unsecured http
      */
-    public Webclient(String namespace, String user, String password, String host) {
+    public Webclient(String namespace, String user, String password,
+	    String host, KeystoreConf kconf) {
 	this.host = host;
 	this.namespace = namespace;
 	ClientConfig cc = new DefaultClientConfig();
@@ -82,9 +90,37 @@ public class Webclient {
 	cc.getProperties().put(
 		DefaultApacheHttpClientConfig.PROPERTY_CHUNKED_ENCODING_SIZE,
 		1024);
+	if (kconf != null) {
+	    cc.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES,
+		    new HTTPSProperties(null, initSsl(cc, kconf)));
+	    endpoint = "https://" + host;
+
+	    System.out.println("Connect via https");
+	} else {
+	    System.out.println("Connect via http");
+	    endpoint = "http://" + host;
+	}
 	webclient = Client.create(cc);
 	webclient.addFilter(new HTTPBasicAuthFilter(user, password));
-	endpoint = host;
+    }
+
+    private SSLContext initSsl(ClientConfig cc, KeystoreConf kconf) {
+	try {
+	    SSLContext ctx = SSLContext.getInstance("SSL");
+
+	    KeyStore trustStore;
+	    trustStore = KeyStore.getInstance("JKS");
+	    trustStore.load(new FileInputStream(kconf.location),
+		    kconf.password.toCharArray());
+	    TrustManagerFactory tmf = TrustManagerFactory
+		    .getInstance("SunX509");
+	    tmf.init(trustStore);
+
+	    ctx.init(null, tmf.getTrustManagers(), null);
+	    return ctx;
+	} catch (Exception e) {
+	    throw new RuntimeException("Can not initiate SSL connection", e);
+	}
     }
 
     /**
@@ -102,7 +138,6 @@ public class Webclient {
 	} catch (Exception e) {
 	    logger.error(dtlBean.getPid() + " " + e.getMessage(), e);
 	}
-
     }
 
     private void setIdentifier(DigitalEntity dtlBean) {
@@ -146,7 +181,6 @@ public class Webclient {
 	try {
 	    logger.debug("Metadata: " + metadata);
 	    m = readMetadata(resource + "/metadata", dtlBean);
-
 	} catch (Exception e) {
 	    logger.error(dtlBean.getPid() + " " + e.getMessage(), e);
 	}
@@ -175,7 +209,6 @@ public class Webclient {
 	} catch (Exception e) {
 	    logger.error(pid + " " + e.getMessage(), e);
 	}
-
     }
 
     private String appendMetadata(String m, String metadata) {
@@ -228,7 +261,6 @@ public class Webclient {
      *            The DigitalEntity to operate on
      */
     public void createResource(ObjectType type, DigitalEntity dtlBean) {
-
 	String pid = namespace + ":" + dtlBean.getPid();
 	String ppid = dtlBean.getParentPid();
 	logger.info(pid + " is child of " + dtlBean.getParentPid());
@@ -460,7 +492,6 @@ public class Webclient {
 	    String response = resource.type("application/json")
 		    .accept("application/json").get(String.class);
 	    return response;
-
 	} catch (Exception e) {
 	    throw new RuntimeException("", e);
 	}
@@ -479,7 +510,6 @@ public class Webclient {
 	    String response = resource.type("application/json")
 		    .accept("application/json").get(String.class);
 	    return response;
-
 	} catch (Exception e) {
 	    throw new RuntimeException("", e);
 	}

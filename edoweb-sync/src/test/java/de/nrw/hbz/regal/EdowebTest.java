@@ -44,6 +44,8 @@ public class EdowebTest {
     String pidFule;
     String downloadHost;
     String localcache;
+    private String keystoreLocation;
+    private String keystorePassword;
 
     /*
      * namespace=ubm password=schnasse user=jan
@@ -71,6 +73,8 @@ public class EdowebTest {
 	fromScratch = "true";
 	downloadHost = properties.getProperty("piddownloader.server");
 	localcache = properties.getProperty("piddownloader.downloadLocation");
+	keystoreLocation = properties.getProperty("keystoreLocation");
+	keystorePassword = properties.getProperty("keystorePassword");
     }
 
     @Test
@@ -78,13 +82,13 @@ public class EdowebTest {
 
 	pidlist = Thread.currentThread().getContextClassLoader()
 		.getResource(pidlist).toString().substring(5);
-	EdowebMain
-		.main(new String[] { "--mode", "TEST", "--user", user,
-			"--password", password, "--dtl", downloadHost,
-			"-cache", localcache, "--oai", oaiHost, "--set",
-			oaiSet, "--timestamp", oaitimestamp, "--fedoraBase",
-			fedoraUrl, "--host", "http://localhost:9000", "-list",
-			pidlist, "-namespace", "test" });
+	EdowebMain.main(new String[] { "--mode", "TEST", "--user", user,
+		"--password", password, "--dtl", downloadHost, "-cache",
+		localcache, "--oai", oaiHost, "--set", oaiSet, "--timestamp",
+		oaitimestamp, "--fedoraBase", fedoraUrl, "--host",
+		"api.localhost", "-list", pidlist, "-namespace", "test",
+		"-keystoreLocation", keystoreLocation, "-keystorePassword",
+		keystorePassword });
 	// EdowebMain
 	// .main(new String[] { "--mode", "DELE", "--user", user,
 	// "--password", password, "--dtl", downloadHost,
