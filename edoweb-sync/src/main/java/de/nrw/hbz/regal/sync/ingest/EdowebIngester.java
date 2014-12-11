@@ -376,10 +376,10 @@ public class EdowebIngester implements IngestInterface {
 		updateFile(dtlBean);
 	    }
 	} catch (IllegalArgumentException e) {
-	    logger.warn(e.getMessage());
+	    logger.warn(pid + "", e);
 	    // webclient.createResource(ObjectType.monograph, dtlBean);
 	} catch (Exception e) {
-	    logger.warn(e.getMessage());
+	    logger.warn(pid + "", e);
 	}
 
 	List<DigitalEntity> list = getParts(dtlBean);

@@ -42,8 +42,8 @@ public class TestOpusDownloader {
 
     public TestOpusDownloader() throws IOException {
 	properties = new Properties();
-	properties.load(getClass().getResourceAsStream(
-		"/testOpusDownloader.properties"));
+	properties
+		.load(getClass().getResourceAsStream("/fhdd_test.properties"));
 	piddownloaderServer = properties.getProperty("piddownloader.server");
 	piddownloaderDownloadLocation = properties
 		.getProperty("piddownloader.downloadLocation");
