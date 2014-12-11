@@ -310,8 +310,8 @@ public class EdowebIngester implements IngestInterface {
 		    new String(), RDFFormat.NTRIPLES);
 	    webclient.setMetadata(dtlBean, metadata);
 	    logger.info(pid + " " + "updated.\n");
-	} catch (IllegalArgumentException e) {
-	    logger.debug(e.getMessage());
+	} catch (Exception e) {
+	    logger.warn(e.getMessage());
 	}
 
     }
@@ -357,31 +357,17 @@ public class EdowebIngester implements IngestInterface {
      *            a dtlBean representing a monograph
      */
     protected void updateMonographs(DigitalEntity dtlBean) {
-
 	String pid = namespace + ":" + dtlBean.getPid();
-	try {
-	    // dtlBean.addTransformer("oaidc");
-	    // dtlBean.addTransformer("epicur");
-	    // dtlBean.addTransformer("aleph");
-	    webclient.createResource(ObjectType.monograph, dtlBean);
-	    webclient.autoGenerateMetdata(dtlBean);
-	    webclient.addUrn(dtlBean.getPid(), namespace, "hbz:929:02");
-	    webclient.makeOaiSet(dtlBean);
-	    if (dtlBean.getStream(StreamType.DATA).getMimeType()
-		    .compareTo("application/pdf") == 0) {
-		dtlBean.setParentPid(dtlBean.getPid());
-		dtlBean.setPid(dtlBean.getPid() + "-1");
-		// dtlBean.removeTransformer("oaidc");
-		// dtlBean.removeTransformer("epicur");
-		updateFile(dtlBean);
-	    }
-	} catch (IllegalArgumentException e) {
-	    logger.warn(pid + "", e);
-	    // webclient.createResource(ObjectType.monograph, dtlBean);
-	} catch (Exception e) {
-	    logger.warn(pid + "", e);
+	webclient.createResource(ObjectType.monograph, dtlBean);
+	webclient.autoGenerateMetdata(dtlBean);
+	webclient.addUrn(dtlBean.getPid(), namespace, "hbz:929:02");
+	webclient.makeOaiSet(dtlBean);
+	if (dtlBean.getStream(StreamType.DATA).getMimeType()
+		.compareTo("application/pdf") == 0) {
+	    dtlBean.setParentPid(dtlBean.getPid());
+	    dtlBean.setPid(dtlBean.getPid() + "-1");
+	    updateFile(dtlBean);
 	}
-
 	List<DigitalEntity> list = getParts(dtlBean);
 	int num = list.size();
 	int count = 1;
@@ -390,9 +376,7 @@ public class EdowebIngester implements IngestInterface {
 	    logger.info("Part: " + (count++) + "/" + num);
 	    updatePart(b);
 	}
-
 	logger.info(pid + " " + "updated.\n");
-
     }
 
     private void updateJournal(DigitalEntity dtlBean) {
