@@ -473,10 +473,14 @@ public class Webclient {
      *            urn subnamespace id
      */
     public void addUrn(String id, String ns, String snid) {
-	WebResource resource = webclient.resource(endpoint
-		+ "/utils/addUrn?id=" + id + "&namespace=" + ns + "&snid="
-		+ snid);
-	resource.post();
+	try {
+	    WebResource resource = webclient.resource(endpoint
+		    + "/utils/addUrn?id=" + id + "&namespace=" + ns + "&snid="
+		    + snid);
+	    resource.post();
+	} catch (Exception e) {
+	    logger.info(id + " already has urn.");
+	}
     }
 
     /**
