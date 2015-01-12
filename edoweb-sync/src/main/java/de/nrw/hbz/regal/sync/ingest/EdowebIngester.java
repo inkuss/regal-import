@@ -362,12 +362,7 @@ public class EdowebIngester implements IngestInterface {
 	webclient.autoGenerateMetdata(dtlBean);
 	webclient.addUrn(dtlBean.getPid(), namespace, "hbz:929:02");
 	webclient.makeOaiSet(dtlBean);
-	if (dtlBean.getStream(StreamType.DATA).getMimeType()
-		.compareTo("application/pdf") == 0) {
-	    dtlBean.setParentPid(dtlBean.getPid());
-	    dtlBean.setPid(dtlBean.getPid() + "-1");
-	    updateFile(dtlBean);
-	}
+	includeDataStreamIfAvailable(dtlBean);
 	List<DigitalEntity> list = getParts(dtlBean);
 	int num = list.size();
 	int count = 1;
@@ -377,6 +372,20 @@ public class EdowebIngester implements IngestInterface {
 	    updatePart(b);
 	}
 	logger.info(pid + " " + "updated.\n");
+    }
+
+    private void includeDataStreamIfAvailable(DigitalEntity dtlBean) {
+	try {
+	    if (dtlBean.getStream(StreamType.DATA).getMimeType()
+		    .compareTo("application/pdf") == 0) {
+		dtlBean.setParentPid(dtlBean.getPid());
+		dtlBean.setPid(dtlBean.getPid() + "-1");
+		updateFile(dtlBean);
+		logger.debug("Found direct data stream for " + dtlBean.getPid());
+	    }
+	} catch (Exception e) {
+	    logger.debug("No data stream found for " + dtlBean.getPid());
+	}
     }
 
     private void updateJournal(DigitalEntity dtlBean) {
