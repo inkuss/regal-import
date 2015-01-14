@@ -73,6 +73,7 @@ public class EdowebDigitalEntityBuilder implements
 	} else {
 	    dtlDe = addSiblings(dtlDe);
 	    dtlDe = addDigitoolChildren(dtlDe);
+	    dtlDe = addChildren(dtlDe);
 	}
 	dtlDe = removeEmptyVolumes(dtlDe);
 	return dtlDe;
@@ -469,6 +470,18 @@ public class EdowebDigitalEntityBuilder implements
 		if (type.compareTo(DigitalEntityRelation.include.toString()) == 0
 			&& mimeType.equals("application/pdf")
 			&& (usageType.compareTo(DigitalEntityRelation.ARCHIVE
+				.toString()) != 0)) {
+		    try {
+			DigitalEntity b = build(entity.getLocation(), relPid);
+			b.setUsageType(usageType);
+			addToTree(dtlDe, b);
+		    } catch (Exception e) {
+			e.printStackTrace();
+		    }
+		} else if (type.compareTo(DigitalEntityRelation.include
+			.toString()) == 0
+			&& mimeType.equals("application/zip")
+			&& (usageType.compareTo(DigitalEntityRelation.VIEW
 				.toString()) != 0)) {
 		    try {
 			DigitalEntity b = build(entity.getLocation(), relPid);

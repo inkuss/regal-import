@@ -318,27 +318,11 @@ public class EdowebIngester implements IngestInterface {
 
     private void updateWebpage(DigitalEntity dtlBean) {
 	String pid = namespace + ":" + dtlBean.getPid();
-	try {
-	    // dtlBean.addTransformer("oaidc");
-	    // dtlBean.addTransformer("epicur");
-	    // dtlBean.addTransformer("aleph");
-	    webclient.createResource(ObjectType.webpage, dtlBean);
-	    webclient.autoGenerateMetdata(dtlBean);
-	    webclient.addUrn(dtlBean.getPid(), namespace, "hbz:929:02");
-	    webclient.makeOaiSet(dtlBean);
-	    if (dtlBean.getStream(StreamType.DATA).getMimeType()
-		    .compareTo("application/zip") == 0)
-
-	    {
-		dtlBean.setParentPid(dtlBean.getPid());
-		dtlBean.setPid(dtlBean.getPid() + "-1");
-		updateFile(dtlBean);
-	    }
-	} catch (IllegalArgumentException e) {
-	    logger.warn(e.getMessage());
-	    // webclient.createResource(ObjectType.monograph, dtlBean);
-	}
-
+	webclient.createResource(ObjectType.webpage, dtlBean);
+	webclient.autoGenerateMetdata(dtlBean);
+	webclient.addUrn(dtlBean.getPid(), namespace, "hbz:929:02");
+	webclient.makeOaiSet(dtlBean);
+	includeDataStreamIfAvailable(dtlBean);
 	List<DigitalEntity> list = getParts(dtlBean);
 	int num = list.size();
 	int count = 1;
