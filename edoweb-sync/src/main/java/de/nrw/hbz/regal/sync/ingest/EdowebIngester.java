@@ -313,9 +313,7 @@ public class EdowebIngester implements IngestInterface {
 	    logger.info("Part: " + (count++) + "/" + num);
 	    updateVersion(b);
 	}
-
 	logger.info(pid + " " + "updated.\n");
-
     }
 
     /**
@@ -343,7 +341,9 @@ public class EdowebIngester implements IngestInterface {
     private void includeDataStreamIfAvailable(DigitalEntity dtlBean) {
 	try {
 	    if (dtlBean.getStream(StreamType.DATA).getMimeType()
-		    .compareTo("application/pdf") == 0) {
+		    .compareTo("application/pdf") == 0
+		    || dtlBean.getStream(StreamType.DATA).getMimeType()
+			    .compareTo("application/zip") == 0) {
 		dtlBean.setParentPid(dtlBean.getPid());
 		dtlBean.setPid(dtlBean.getPid() + "-1");
 		updateFile(dtlBean);
