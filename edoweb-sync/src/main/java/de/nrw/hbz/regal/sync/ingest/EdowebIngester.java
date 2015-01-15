@@ -189,114 +189,6 @@ public class EdowebIngester implements IngestInterface {
 	}
     }
 
-    private void updateVersion(DigitalEntity dtlBean) {
-	String pid = namespace + ":" + dtlBean.getPid();
-	try {
-	    ObjectType t = ObjectType.version;
-	    // dtlBean.addTransformer("oaidc");
-	    // dtlBean.addTransformer("epicur");
-	    webclient.createObject(dtlBean, t);
-	    logger.info(pid + " " + "Found webpage version.");
-
-	    String metadata = "<" + pid
-		    + "> <http://purl.org/ontology/bibo/Website> \""
-		    + dtlBean.getLabel() + "\" .\n" + "<" + pid
-		    + "> <http://purl.org/dc/terms/title> \""
-		    + dtlBean.getLabel() + "\" .\n";
-	    webclient.setMetadata(dtlBean, metadata);
-	    webclient.addUrn(dtlBean.getPid(), namespace, "hbz:929:02");
-	    webclient.makeOaiSet(dtlBean);
-	    logger.info(pid + " " + "updated.\n");
-	} catch (IllegalArgumentException e) {
-	    logger.debug(e.getMessage());
-	}
-
-    }
-
-    private void updateVolume(DigitalEntity dtlBean) {
-	String pid = namespace + ":" + dtlBean.getPid();
-	logger.info(pid + " " + "Found eJournal volume.");
-
-	List<DigitalEntity> list = getParts(dtlBean);
-	initVolume(
-		dtlBean,
-		pid,
-		list.stream().map((DigitalEntity d) -> d.getPid())
-			.collect(Collectors.toList()));
-
-	int num = list.size();
-	int count = 1;
-	logger.info(pid + " Found " + num + " issues.");
-	for (DigitalEntity issue : list) {
-	    logger.info("Part: " + (count++) + "/" + num);
-	    updatePart(issue);
-	}
-
-	logger.info(pid + " " + "updated.\n");
-    }
-
-    private void initVolume(DigitalEntity dtlBean, String pid,
-	    List<String> parts) {
-	try {
-	    // dtlBean.addTransformer("oaidc");
-	    // dtlBean.addTransformer("epicur");
-	    ObjectType t = ObjectType.volume;
-	    webclient.createResource(t, dtlBean);
-	    String metadata = "<" + pid
-		    + "> <http://purl.org/ontology/bibo/volume> \""
-		    + dtlBean.getLabel() + "\" .\n" + "<" + pid
-		    + "> <http://purl.org/dc/terms/title> \""
-		    + dtlBean.getLabel() + "\" .\n";
-	    webclient.setMetadata(dtlBean, metadata);
-	    webclient.addUrn(dtlBean.getPid(), namespace, "hbz:929:02");
-	    webclient.makeOaiSet(dtlBean);
-	    webclient.createSeq(dtlBean, parts);
-	} catch (Exception e) {
-	    logger.debug("", e);
-	}
-    }
-
-    private void initIssue(DigitalEntity dtlBean, String pid, List<String> parts) {
-	try {
-	    // dtlBean.addTransformer("oaidc");
-	    // dtlBean.addTransformer("epicur");
-	    ObjectType t = ObjectType.issue;
-	    webclient.createResource(t, dtlBean);
-	    String metadata = "<" + pid
-		    + "> <http://purl.org/ontology/bibo/issue> \""
-		    + dtlBean.getLabel() + "\" .\n" + "<" + pid
-		    + "> <http://purl.org/dc/terms/title> \""
-		    + dtlBean.getLabel() + "\" .\n";
-	    webclient.setMetadata(dtlBean, metadata);
-	    webclient.addUrn(dtlBean.getPid(), namespace, "hbz:929:02");
-	    webclient.makeOaiSet(dtlBean);
-	    webclient.createSeq(dtlBean, parts);
-	} catch (Exception e) {
-	    logger.debug("", e);
-	}
-    }
-
-    private void updateIssue(DigitalEntity dtlBean) {
-	String pid = namespace + ":" + dtlBean.getPid();
-	logger.info(pid + " " + "Found eJournal issue.");
-
-	List<DigitalEntity> list = getParts(dtlBean);
-	initIssue(
-		dtlBean,
-		pid,
-		list.stream().map((DigitalEntity d) -> d.getPid())
-			.collect(Collectors.toList()));
-	int num = list.size();
-	int count = 1;
-	logger.info(pid + " Found " + num + " issues.");
-	for (DigitalEntity part : list) {
-	    logger.info("Part: " + (count++) + "/" + num);
-	    updatePart(part);
-	}
-
-	logger.info(pid + " " + "updated.\n");
-    }
-
     private void updateFile(DigitalEntity dtlBean) {
 	String pid = namespace + ":" + dtlBean.getPid();
 
@@ -316,11 +208,101 @@ public class EdowebIngester implements IngestInterface {
 
     }
 
+    private void updateVersion(DigitalEntity dtlBean) {
+	String pid = namespace + ":" + dtlBean.getPid();
+	try {
+	    ObjectType t = ObjectType.version;
+	    webclient.createObject(dtlBean, t);
+	    logger.info(pid + " " + "Found webpage version.");
+	    String metadata = RdfUtils.addTriple(pid,
+		    "http://purl.org/dc/terms/title", dtlBean.getLabel(), true,
+		    new String(), RDFFormat.NTRIPLES);
+	    webclient.setMetadata(dtlBean, metadata);
+	    logger.info(pid + " " + "updated.\n");
+	} catch (Exception e) {
+	    logger.warn(e.getMessage());
+	}
+
+    }
+
+    private void updateVolume(DigitalEntity dtlBean) {
+	String pid = namespace + ":" + dtlBean.getPid();
+	logger.info(pid + " " + "Found eJournal volume.");
+	List<DigitalEntity> list = getParts(dtlBean);
+	initVolume(
+		dtlBean,
+		pid,
+		list.stream().map((DigitalEntity d) -> d.getPid())
+			.collect(Collectors.toList()));
+	int num = list.size();
+	int count = 1;
+	logger.info(pid + " Found " + num + " issues.");
+	for (DigitalEntity issue : list) {
+	    logger.info("Part: " + (count++) + "/" + num);
+	    updatePart(issue);
+	}
+
+	logger.info(pid + " " + "updated.\n");
+    }
+
+    private void initVolume(DigitalEntity dtlBean, String pid,
+	    List<String> parts) {
+	try {
+	    ObjectType t = ObjectType.volume;
+	    webclient.createResource(t, dtlBean);
+	    String metadata = "<" + pid
+		    + "> <http://purl.org/ontology/bibo/volume> \""
+		    + dtlBean.getLabel() + "\" .\n" + "<" + pid
+		    + "> <http://purl.org/dc/terms/title> \""
+		    + dtlBean.getLabel() + "\" .\n";
+	    webclient.setMetadata(dtlBean, metadata);
+	    webclient.makeOaiSet(dtlBean);
+	    webclient.createSeq(dtlBean, parts);
+	} catch (Exception e) {
+	    logger.debug("", e);
+	}
+    }
+
+    private void initIssue(DigitalEntity dtlBean, String pid, List<String> parts) {
+	try {
+	    ObjectType t = ObjectType.issue;
+	    webclient.createResource(t, dtlBean);
+	    String metadata = "<" + pid
+		    + "> <http://purl.org/ontology/bibo/issue> \""
+		    + dtlBean.getLabel() + "\" .\n" + "<" + pid
+		    + "> <http://purl.org/dc/terms/title> \""
+		    + dtlBean.getLabel() + "\" .\n";
+	    webclient.setMetadata(dtlBean, metadata);
+	    webclient.makeOaiSet(dtlBean);
+	    webclient.createSeq(dtlBean, parts);
+	} catch (Exception e) {
+	    logger.debug("", e);
+	}
+    }
+
+    private void updateIssue(DigitalEntity dtlBean) {
+	String pid = namespace + ":" + dtlBean.getPid();
+	logger.info(pid + " " + "Found eJournal issue.");
+	List<DigitalEntity> list = getParts(dtlBean);
+	initIssue(
+		dtlBean,
+		pid,
+		list.stream().map((DigitalEntity d) -> d.getPid())
+			.collect(Collectors.toList()));
+	int num = list.size();
+	int count = 1;
+	logger.info(pid + " Found " + num + " issues.");
+	for (DigitalEntity part : list) {
+	    logger.info("Part: " + (count++) + "/" + num);
+	    updatePart(part);
+	}
+	logger.info(pid + " " + "updated.\n");
+    }
+
     private void updateWebpage(DigitalEntity dtlBean) {
 	String pid = namespace + ":" + dtlBean.getPid();
 	webclient.createResource(ObjectType.webpage, dtlBean);
 	webclient.autoGenerateMetdata(dtlBean);
-	webclient.addUrn(dtlBean.getPid(), namespace, "hbz:929:02");
 	webclient.makeOaiSet(dtlBean);
 	includeDataStreamIfAvailable(dtlBean);
 	List<DigitalEntity> list = getParts(dtlBean);
@@ -399,12 +381,8 @@ public class EdowebIngester implements IngestInterface {
 	    List<String> parts) {
 	try {
 	    logger.info(pid + " Found ejournal.");
-	    // dtlBean.addTransformer("oaidc");
-	    // dtlBean.addTransformer("epicur");
-	    // dtlBean.addTransformer("aleph");
 	    webclient.createResource(ObjectType.journal, dtlBean);
 	    webclient.autoGenerateMetdata(dtlBean);
-	    webclient.addUrn(dtlBean.getPid(), namespace, "hbz:929:02");
 	    webclient.makeOaiSet(dtlBean);
 	    webclient.createSeq(dtlBean, parts);
 	} catch (Exception e) {
@@ -416,12 +394,8 @@ public class EdowebIngester implements IngestInterface {
 	String pid = namespace + ":" + dtlBean.getPid();
 	try {
 	    logger.info(pid + " Found ejournal.");
-	    // dtlBean.addTransformer("oaidc");
-	    // dtlBean.addTransformer("epicur");
-	    // dtlBean.addTransformer("aleph");
 	    webclient.createResource(ObjectType.journal, dtlBean);
 	    webclient.autoGenerateMetdata(dtlBean);
-	    webclient.addUrn(dtlBean.getPid(), namespace, "hbz:929:02");
 	    webclient.makeOaiSet(dtlBean);
 	    List<DigitalEntity> parts = getParts(dtlBean);
 	    int numOfVols = parts.size();
@@ -438,12 +412,8 @@ public class EdowebIngester implements IngestInterface {
 	String pid = namespace + ":" + dtlBean.getPid();
 	try {
 	    logger.info(pid + " Found webpage.");
-	    // dtlBean.addTransformer("oaidc");
-	    // dtlBean.addTransformer("epicur");
-	    // dtlBean.addTransformer("aleph");
 	    webclient.createResource(ObjectType.webpage, dtlBean);
 	    webclient.autoGenerateMetdata(dtlBean);
-	    webclient.addUrn(dtlBean.getPid(), namespace, "hbz:929:02");
 	    webclient.makeOaiSet(dtlBean);
 	    List<DigitalEntity> viewLinks = getParts(dtlBean);
 	    int numOfVersions = viewLinks.size();
