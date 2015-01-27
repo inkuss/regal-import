@@ -277,7 +277,7 @@ public class Syncer {
 		}
 
 	    } catch (Exception e) {
-		logger.error(e.toString(), e);
+		logger.error("", e);
 
 	    }
 	}
