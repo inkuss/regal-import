@@ -557,4 +557,42 @@ public class Webclient {
 	}
     }
 
+    public String setMetadata(String pid, String metadata) {
+	String resourceUrl = endpoint + "/resource/" + pid + "/metadata";
+	WebResource resource = webclient.resource(resourceUrl);
+	try {
+	    logger.info("curl -XPUT -uedoweb-admin:admin " + resource);
+	    resource.accept("text/plain").type("text/plain").put(metadata);
+	    return resource.get(String.class);
+	} catch (Exception e) {
+	    throw new RuntimeException("", e);
+	}
+    }
+
+    public String flatten(String pid) {
+	String resourceUrl = endpoint + "/resource/" + pid + "/flatten";
+	WebResource resource = webclient.resource(resourceUrl);
+	try {
+	    logger.info("curl -XPOST -uedoweb-admin:admin " + resource);
+	    String response = resource.accept("text/plain").type("text/plain")
+		    .post(String.class);
+	    return response;
+	} catch (Exception e) {
+	    throw new RuntimeException("", e);
+	}
+    }
+
+    public String flattenAll(String pid) {
+	String resourceUrl = endpoint + "/resource/" + pid + "/all/flatten";
+	WebResource resource = webclient.resource(resourceUrl);
+	try {
+	    logger.info("curl -XPOST -uedoweb-admin:admin " + resource);
+	    String response = resource.accept("text/plain").type("text/plain")
+		    .post(String.class);
+	    return response;
+	} catch (Exception e) {
+	    throw new RuntimeException("", e);
+	}
+    }
+
 }

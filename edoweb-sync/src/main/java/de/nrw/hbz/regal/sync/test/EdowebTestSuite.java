@@ -207,6 +207,7 @@ public class EdowebTestSuite {
     }
 
     public void testMoveUp() throws Exception {
+	logger.info("test moveUp");
 	String pid = "test:2341567";
 	String parentPid = "test:2134567";
 	String grandParentPid = "test:2314567";
@@ -258,6 +259,120 @@ public class EdowebTestSuite {
 	client.delete(grandParentPid);
     }
 
+    public void testFlatten() throws Exception {
+	logger.info("test flatten");
+	String pid = "test:2341567";
+	String parentPid = "test:2134567";
+	String grandParentPid = "test:2314567";
+
+	RegalObject input = new RegalObject();
+
+	input.setContentType("volume");
+	input.setParentPid(null);
+	client.createResource(input, grandParentPid);
+
+	input.setContentType("issue");
+	input.setParentPid(grandParentPid);
+	client.createResource(input, parentPid);
+	client.setMetadata(parentPid, "<" + parentPid
+		+ "> <http://purl.org/dc/terms/title> \"30_11\" .");
+
+	input.setContentType("file");
+	input.setParentPid(parentPid);
+	client.createResource(input, pid);
+
+	client.flatten(pid);
+
+	Map<String, Object> child = readToMap(str2stream(client
+		.readResource(pid)));
+	Map<String, Object> parent = readToMap(str2stream(client
+		.readResource(parentPid)));
+	Map<String, Object> grandParent = readToMap(str2stream(client
+		.readResource(grandParentPid)));
+
+	String cpp = (String) child.get("parentPid");
+	Assert.assertEquals(grandParentPid, cpp);
+	List<String> pcp = (List<String>) grandParent.get("hasPart");
+	int size = pcp.size();
+	logger.debug(pcp.toString());
+	Assert.assertTrue(size == 2);
+
+	pcp = (List<String>) parent.get("hasPart");
+	Assert.assertTrue(pcp == null);
+
+	Assert.assertEquals(parent.get("title"), child.get("title"));
+
+	client.delete(pid);
+
+	Assert.assertEquals(false, readTest(pid));
+	parent = readToMap(str2stream(client.readResource(parentPid)));
+	if (parent.containsKey("hasPart")) {
+	    List<String> parts = (List<String>) parent.get("hasPart");
+	    Assert.assertFalse(parts.contains(pid));
+	    Assert.assertTrue(parts.size() == size - 1);
+	}
+
+	client.delete(parentPid);
+	client.delete(grandParentPid);
+    }
+
+    public void testFlattenAll() throws Exception {
+	logger.info("test flattenAll");
+	String pid = "test:2341567";
+	String parentPid = "test:2134567";
+	String grandParentPid = "test:2314567";
+
+	RegalObject input = new RegalObject();
+
+	input.setContentType("volume");
+	input.setParentPid(null);
+	client.createResource(input, grandParentPid);
+
+	input.setContentType("issue");
+	input.setParentPid(grandParentPid);
+	client.createResource(input, parentPid);
+	client.setMetadata(parentPid, "<" + parentPid
+		+ "> <http://purl.org/dc/terms/title> \"30_11\" .");
+
+	input.setContentType("file");
+	input.setParentPid(parentPid);
+	client.createResource(input, pid);
+
+	client.flattenAll(grandParentPid);
+
+	Map<String, Object> child = readToMap(str2stream(client
+		.readResource(pid)));
+	Map<String, Object> parent = readToMap(str2stream(client
+		.readResource(parentPid)));
+	Map<String, Object> grandParent = readToMap(str2stream(client
+		.readResource(grandParentPid)));
+
+	String cpp = (String) child.get("parentPid");
+	Assert.assertEquals(grandParentPid, cpp);
+	List<String> pcp = (List<String>) grandParent.get("hasPart");
+	int size = pcp.size();
+	logger.debug(pcp.toString());
+	Assert.assertTrue(size == 2);
+
+	pcp = (List<String>) parent.get("hasPart");
+	Assert.assertTrue(pcp == null);
+
+	Assert.assertEquals(parent.get("title"), child.get("title"));
+
+	client.delete(pid);
+
+	Assert.assertEquals(false, readTest(pid));
+	parent = readToMap(str2stream(client.readResource(parentPid)));
+	if (parent.containsKey("hasPart")) {
+	    List<String> parts = (List<String>) parent.get("hasPart");
+	    Assert.assertFalse(parts.contains(pid));
+	    Assert.assertTrue(parts.size() == size - 1);
+	}
+
+	client.delete(parentPid);
+	client.delete(grandParentPid);
+    }
+
     public boolean readTest(String pid) {
 	boolean success = false;
 	try {
@@ -284,7 +399,11 @@ public class EdowebTestSuite {
 		createObject(id);
 		testHasParent(id);
 		updateObject(id);
-		testImportParentsMetadata(id);
+		try {
+		    testImportParentsMetadata(id);
+		} catch (Exception e) {
+		    logger.info(id + " has no descriptive metadata.");
+		}
 		urnResolving(id);
 		oaiProviding(id);
 	    } catch (Exception e) {
