@@ -440,9 +440,11 @@ public class EdowebIngester implements IngestInterface {
     @Override
     public void test() {
 	EdowebTestSuite tests = new EdowebTestSuite();
-	tests.objecttest(new String[] { "1750717", "1750717-1" });
-	tests.objecttest(new String[] { "5086631", "5086631-0", "5086631-0-0",
-		"5086634", "5086631-0-1", "5086631-0-2", "5086631-1",
-		"5086631-1-0" });
+	// tests.objecttest(new String[] { "1750717", "1750717-1" });
+	tests.objecttest(new String[] { "0000415" });
+	// tests.objecttest(new String[] { "5086631", "5086631-0",
+	// "5086631-0-0",
+	// "5086634", "5086631-0-1", "5086631-0-2", "5086631-1",
+	// "5086631-1-0" });
     }
 }
