@@ -58,7 +58,7 @@
 		<dependency>
 			<groupId>de.nrw.hbz.regal</groupId>
 			<artifactId>regal-api</artifactId>
-			<version>0.6.0</version>
+			<version>${regal.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>de.nrw.hbz.regal</groupId>
