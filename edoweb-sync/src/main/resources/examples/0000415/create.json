@@ -1,0 +1,13 @@
+{
+	"contentType":"monograph",
+	"accessScheme":"private",
+	"publishScheme":"public",
+    "transformer": [
+        "oaidc"
+    ],
+	"isDescribedBy":
+	{
+	"createdBy":"1",
+	"name":"This is the title of the MD record"
+	}
+}
