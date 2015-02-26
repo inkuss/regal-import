@@ -90,7 +90,7 @@ public class Webclient {
 	cc.getProperties().put(
 		DefaultApacheHttpClientConfig.PROPERTY_CHUNKED_ENCODING_SIZE,
 		1024);
-	if (kconf != null) {
+	if (kconf != null && kconf.location != null && kconf.password != null) {
 	    cc.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES,
 		    new HTTPSProperties(null, initSsl(cc, kconf)));
 	    endpoint = "https://" + host;
