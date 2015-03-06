@@ -183,6 +183,8 @@ public class EdowebIngester implements IngestInterface {
 	    updateVersion(dtlBean);
 	} else if (usageType.compareTo(ObjectType.issue.toString()) == 0) {
 	    updateIssue(dtlBean);
+	} else if (usageType.compareTo(ObjectType.rootElement.toString()) == 0) {
+	    updateRootElement(dtlBean);
 	} else // if (usageType.compareTo(ObjectType.issue.toString()) == 0)
 	{
 	    updateFile(dtlBean);
@@ -245,6 +247,23 @@ public class EdowebIngester implements IngestInterface {
 	logger.info(pid + " " + "updated.\n");
     }
 
+    private void updateRootElement(DigitalEntity dtlBean) {
+	String pid = namespace + ":" + dtlBean.getPid();
+	logger.info(pid + " " + "Found eJournal rootElement.");
+	List<DigitalEntity> list = getParts(dtlBean);
+
+	int num = list.size();
+	int count = 1;
+	logger.info(pid + " Found " + num + " volumes.");
+	for (DigitalEntity volume : list) {
+	    logger.info("Part: " + (count++) + "/" + num);
+	    volume.setParentPid(dtlBean.getParentPid());
+	    updatePart(volume);
+	}
+
+	logger.info(pid + " " + "updated.\n");
+    }
+
     private void initVolume(DigitalEntity dtlBean, String pid,
 	    List<String> parts) {
 	try {
@@ -282,7 +301,7 @@ public class EdowebIngester implements IngestInterface {
 
     private void updateIssue(DigitalEntity dtlBean) {
 	String pid = namespace + ":" + dtlBean.getPid();
-	logger.info(pid + " " + "Found eJournal issue.");
+	logger.info(pid + " " + "Found eJournal file.");
 	List<DigitalEntity> list = getParts(dtlBean);
 	initIssue(
 		dtlBean,
@@ -291,7 +310,7 @@ public class EdowebIngester implements IngestInterface {
 			.collect(Collectors.toList()));
 	int num = list.size();
 	int count = 1;
-	logger.info(pid + " Found " + num + " issues.");
+	logger.info(pid + " Found " + num + " file.");
 	for (DigitalEntity part : list) {
 	    logger.info("Part: " + (count++) + "/" + num);
 	    updatePart(part);

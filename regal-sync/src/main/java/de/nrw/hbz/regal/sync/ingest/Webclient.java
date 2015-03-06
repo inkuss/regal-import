@@ -233,8 +233,8 @@ public class Webclient {
 	    json.delete(json.length() - 1, json.length());
 	    json.append("]");
 	    logger.debug(json.toString());
-	    updateMetadata(resource + "/parts", json.toString(),
-		    "application/json");
+	    // updateMetadata(resource + "/parts", json.toString(),
+	    // "application/json");
 	} catch (Exception e) {
 	    logger.error(pid + " " + e.getMessage(), e);
 	}
@@ -308,7 +308,7 @@ public class Webclient {
     private void updateMetadata(String url, String metadata,
 	    String contentType, String charset) {
 	WebResource metadataRes = webclient.resource(url);
-	logger.debug(url);
+	logger.debug("PUT metadata to " + url);
 	metadataRes.type(contentType + ";charset=" + charset).put(metadata);
     }
 
