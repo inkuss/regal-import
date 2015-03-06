@@ -315,7 +315,8 @@ public class EdowebDigitalEntityBuilder implements
 	}
 	logger.debug("found data stream " + file + "," + mime + ","
 		+ StreamType.DATA + "," + fileId);
-
+	dtlDe.setLabel(root.getElementsByTagName("label").item(0)
+		.getTextContent());
 	dtlDe.addStream(file, mime, StreamType.DATA, fileId, getMd5(file));
     }
 
