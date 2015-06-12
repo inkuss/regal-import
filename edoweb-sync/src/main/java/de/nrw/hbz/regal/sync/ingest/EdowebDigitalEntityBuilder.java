@@ -223,27 +223,29 @@ public class EdowebDigitalEntityBuilder implements
 	    Element root = XmlUtils.getDocument(entity.getStream(
 		    StreamType.STRUCT_MAP).getFile());
 
-	    List<Element> volumes = XmlUtils.getElements("/*/*/*/*/*", root,
+	    List<Element> firstLevel = XmlUtils.getElements("/*/*/*/*/*", root,
 		    null);
 	    logger.debug("create volumes for: " + entity.getPid());
-	    for (Element volume : volumes) {
+	    for (Element firstLevelElement : firstLevel) {
 
 		DigitalEntity v = createDigitalEntity(ObjectType.volume,
-			volume.getAttribute("LABEL"), dtlDe.getPid(),
-			dtlDe.getLocation());
-		v.setOrder(volume.getAttribute("ORDER"));
+			firstLevelElement.getAttribute("LABEL"),
+			dtlDe.getPid(), dtlDe.getLocation());
+		v.setOrder(firstLevelElement.getAttribute("ORDER"));
 		dtlDe.addRelated(v, DigitalEntityRelation.part_of.toString());
 		logger.debug("Create volume " + v.getPid());
-		List<Element> issues = XmlUtils.getElements("./div", volume,
-			null);
-		if (issues == null || issues.isEmpty())
-		    mapFileIdToDigitalEntity(v, volume);
-		else {
+		List<Element> issues = XmlUtils.getElements("./div",
+			firstLevelElement, null);
+		if (issues == null || issues.isEmpty()) {
+		    v.setUsageType(ObjectType.rootElement.toString());
+		    mapFileIdToDigitalEntity(v, firstLevelElement);
+		} else {
 		    for (Element issue : issues) {
-			DigitalEntity i = createDigitalEntity(ObjectType.issue,
+			DigitalEntity i = createDigitalEntity(
+				ObjectType.rootElement,
 				issue.getAttribute("LABEL"), v.getPid(),
 				dtlDe.getLocation());
-			i.setOrder(volume.getAttribute("ORDER"));
+			i.setOrder(firstLevelElement.getAttribute("ORDER"));
 			logger.debug("Create issue " + i.getPid());
 			v.addRelated(i,
 				DigitalEntityRelation.part_of.toString());
@@ -315,7 +317,8 @@ public class EdowebDigitalEntityBuilder implements
 	}
 	logger.debug("found data stream " + file + "," + mime + ","
 		+ StreamType.DATA + "," + fileId);
-
+	dtlDe.setLabel(root.getElementsByTagName("label").item(0)
+		.getTextContent());
 	dtlDe.addStream(file, mime, StreamType.DATA, fileId, getMd5(file));
     }
 

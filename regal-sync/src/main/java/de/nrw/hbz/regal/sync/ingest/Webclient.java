@@ -90,7 +90,7 @@ public class Webclient {
 	cc.getProperties().put(
 		DefaultApacheHttpClientConfig.PROPERTY_CHUNKED_ENCODING_SIZE,
 		1024);
-	if (kconf != null) {
+	if (kconf != null && kconf.location != null && kconf.password != null) {
 	    cc.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES,
 		    new HTTPSProperties(null, initSsl(cc, kconf)));
 	    endpoint = "https://" + host;
@@ -233,8 +233,8 @@ public class Webclient {
 	    json.delete(json.length() - 1, json.length());
 	    json.append("]");
 	    logger.debug(json.toString());
-	    updateMetadata(resource + "/parts", json.toString(),
-		    "application/json");
+	    // updateMetadata(resource + "/parts", json.toString(),
+	    // "application/json");
 	} catch (Exception e) {
 	    logger.error(pid + " " + e.getMessage(), e);
 	}
@@ -308,7 +308,7 @@ public class Webclient {
     private void updateMetadata(String url, String metadata,
 	    String contentType, String charset) {
 	WebResource metadataRes = webclient.resource(url);
-	logger.debug(url);
+	logger.debug("PUT metadata to " + url);
 	metadataRes.type(contentType + ";charset=" + charset).put(metadata);
     }
 
