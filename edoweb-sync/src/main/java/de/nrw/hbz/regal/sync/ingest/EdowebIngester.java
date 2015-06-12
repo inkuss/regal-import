@@ -172,7 +172,7 @@ public class EdowebIngester implements IngestInterface {
 
     }
 
-    private void updatePart(DigitalEntity dtlBean) {
+    protected void updatePart(DigitalEntity dtlBean) {
 
 	String usageType = dtlBean.getUsageType();
 	if (usageType.compareTo(ObjectType.volume.toString()) == 0) {
@@ -338,7 +338,7 @@ public class EdowebIngester implements IngestInterface {
 	logger.info(pid + " " + "updated.\n");
     }
 
-    private void includeDataStreamIfAvailable(DigitalEntity dtlBean) {
+    protected void includeDataStreamIfAvailable(DigitalEntity dtlBean) {
 	try {
 	    if (dtlBean.getStream(StreamType.DATA).getMimeType()
 		    .compareTo("application/pdf") == 0
@@ -426,7 +426,7 @@ public class EdowebIngester implements IngestInterface {
 
     }
 
-    private List<DigitalEntity> getParts(DigitalEntity dtlBean) {
+    protected List<DigitalEntity> getParts(DigitalEntity dtlBean) {
 	List<DigitalEntity> links = new Vector<DigitalEntity>();
 	for (RelatedDigitalEntity rel : dtlBean.getRelated()) {
 	    if (rel.relation

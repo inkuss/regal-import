@@ -16,6 +16,10 @@
  */
 package de.nrw.hbz.regal.sync.ingest;
 
+import java.util.List;
+
+import models.ObjectType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,6 +65,25 @@ public class EllinetIngester extends EdowebIngester {
 	    logger.info(e.getMessage());
 	}
 
+    }
+
+    @Override
+    protected void updateMonographs(DigitalEntity dtlBean) {
+	String pid = namespace + ":" + dtlBean.getPid();
+	webclient.createResource(ObjectType.monograph, dtlBean);
+	webclient.autoGenerateMetdata(dtlBean);
+	// webclient.addUrn(dtlBean.getPid(), namespace, "hbz:929:02");
+	webclient.makeOaiSet(dtlBean);
+	includeDataStreamIfAvailable(dtlBean);
+	List<DigitalEntity> list = getParts(dtlBean);
+	int num = list.size();
+	int count = 1;
+	logger.info(pid + " Found " + num + " parts.");
+	for (DigitalEntity b : list) {
+	    logger.info("Part: " + (count++) + "/" + num);
+	    updatePart(b);
+	}
+	logger.info(pid + " " + "updated.\n");
     }
 
     @Override
