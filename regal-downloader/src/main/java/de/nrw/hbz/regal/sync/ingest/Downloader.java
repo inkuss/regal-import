@@ -17,7 +17,6 @@
 package de.nrw.hbz.regal.sync.ingest;
 
 import java.io.BufferedInputStream;
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -398,8 +397,10 @@ public abstract class Downloader implements DownloaderInterface {
 		file.getParentFile().mkdirs();
 		file.createNewFile();
 	    }
-	    OutputStream output = new FileOutputStream(file);
-	    IOUtils.copy(dataStreamUrl.openStream(), output);
+
+	    try (OutputStream output = new FileOutputStream(file)) {
+		IOUtils.copy(dataStreamUrl.openStream(), output);
+	    }
 	} catch (Exception e) {
 	    throw new DownloadException(e);
 	}
@@ -419,8 +420,9 @@ public abstract class Downloader implements DownloaderInterface {
 		file.getParentFile().mkdirs();
 		file.createNewFile();
 	    }
-	    OutputStream output = new FileOutputStream(file);
-	    IOUtils.copy(dataStreamUrl.openStream(), output);
+	    try (OutputStream output = new FileOutputStream(file)) {
+		IOUtils.copy(dataStreamUrl.openStream(), output);
+	    }
 	} catch (Exception e) {
 	    throw new DownloadException(e);
 	}
@@ -454,17 +456,13 @@ public abstract class Downloader implements DownloaderInterface {
      */
     @SuppressWarnings("resource")
     protected void zip(File directory, File zipfile) {
-	Closeable res = null;
-	try {
+
+	try (ZipOutputStream zout = new ZipOutputStream(new FileOutputStream(
+		zipfile))) {
 	    URI base = directory.toURI();
 	    Deque<File> queue = new LinkedList<File>();
 	    queue.push(directory);
-	    OutputStream out = new FileOutputStream(zipfile);
-	    res = out;
 
-	    ZipOutputStream zout = new ZipOutputStream(out);
-
-	    res = zout;
 	    while (!queue.isEmpty()) {
 		directory = queue.pop();
 		for (File kid : directory.listFiles()) {
@@ -482,14 +480,6 @@ public abstract class Downloader implements DownloaderInterface {
 	    }
 	} catch (IOException e) {
 	    throw new ZipDownloaderException(e);
-	} finally {
-	    try {
-		if (res != null)
-		    res.close();
-	    } catch (IOException e) {
-		throw new ZipDownloaderException(e);
-	    }
-
 	}
     }
 

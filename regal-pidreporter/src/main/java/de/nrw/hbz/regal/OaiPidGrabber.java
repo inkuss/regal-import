@@ -166,24 +166,12 @@ class OaiPidGrabber {
 		    if (i == 0) {
 			String dateString = reclist.getResponseDate();
 			logger.info("Harvest Date " + dateString + " !");
-			BufferedWriter writer = null;
-			try {
-			    writer = new BufferedWriter(new FileWriter(
-				    new File(this.timestampfile)));
+			try (BufferedWriter writer = new BufferedWriter(
+				new FileWriter(new File(this.timestampfile)))) {
 			    writer.write(dateString);
 			    writer.flush();
-
 			} catch (IOException e) {
 			    e.printStackTrace();
-			} finally {
-
-			    try {
-				if (writer != null)
-				    writer.close();
-			    } catch (IOException e) {
-
-				e.printStackTrace();
-			    }
 			}
 		    }
 		    do {

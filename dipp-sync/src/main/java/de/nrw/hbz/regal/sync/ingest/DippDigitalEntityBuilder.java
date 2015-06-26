@@ -69,9 +69,8 @@ public class DippDigitalEntityBuilder implements DigitalEntityBuilderInterface {
 	// "RELS-EXT.xml");
 	dtlDe.setPid(pid);
 
-	try {
+	try (FileInputStream fis = new FileInputStream(dcFile)) {
 
-	    FileInputStream fis = new FileInputStream(dcFile);
 	    String dcString = IOUtils.toString(fis, "UTF-8");
 	    dcString = dcString.replaceAll("<ns\\:", "<dc:");
 	    dcString = dcString.replaceAll("</ns\\:", "</dc:");

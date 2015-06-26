@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -60,7 +61,6 @@ public class DigitoolDownloader extends Downloader {
 	} catch (Exception e) {
 	    logger.error(pid + " " + e);
 	}
-
     }
 
     /**
@@ -162,7 +162,6 @@ public class DigitoolDownloader extends Downloader {
 	    getXml(file, relPid);
 	    getStream(file, relPid, baseDir);
 	}
-
     }
 
     /**
@@ -170,54 +169,52 @@ public class DigitoolDownloader extends Downloader {
      * @throws IOException
      */
     private File getView(String pid, String baseDir) throws IOException {
-
 	File digitalEntityFile = new File(baseDir + File.separator + pid
 		+ ".xml");
-	digitalEntityFile = getXml(digitalEntityFile, pid);
+	getXml(digitalEntityFile, pid);
 	return digitalEntityFile;
     }
 
     /**
      * @param digitalEntityFile
-     * @return
      */
-    private File getXml(File file, String pid) throws IOException {
+    private void getXml(File file, String pid) throws IOException {
 	URL url = new URL(
 		server
 			+ "/webclient/DeliveryManager?application=Staff&user=Staff&metadata_request=true&pid="
 			+ pid + "&GET_XML=1");
 	URLConnection con = url.openConnection();
-	BufferedReader in = new BufferedReader(new InputStreamReader(
-		con.getInputStream(), "UTF-8"));
+	String str = streamToString(con);
+	stringToFile(str, file);
+    }
 
-	StringWriter strOut = new StringWriter();
-
-	// Copy stream to String
-	char[] buf = new char[1024];
-	int n;
-	while ((n = in.read(buf)) != -1) {
-	    strOut.write(buf, 0, n);
+    private void stringToFile(String str, File file) throws IOException {
+	try (BufferedReader in = new BufferedReader(new StringReader(str));
+		BufferedWriter out = new BufferedWriter(new FileWriter(file))) {
+	    char[] buf = new char[1024];
+	    int n;
+	    while ((n = in.read(buf)) != -1) {
+		out.write(buf, 0, n);
+	    }
 	}
+    }
 
-	String str = strOut.toString();
-	strOut.close();
-	in.close();
-
-	// transform String
-	str = transformString(str);
-
-	// copy String to File
-	in = new BufferedReader(new StringReader(str));
-	BufferedWriter out = new BufferedWriter(new FileWriter(file));
-	buf = new char[1024];
-	while ((n = in.read(buf)) != -1) {
-	    out.write(buf, 0, n);
+    private String streamToString(URLConnection con) throws IOException,
+	    UnsupportedEncodingException {
+	try (StringWriter strOut = new StringWriter();
+		BufferedReader in = new BufferedReader(new InputStreamReader(
+			con.getInputStream(), "UTF-8"))) {
+	    // Copy stream to String
+	    char[] buf = new char[1024];
+	    int n;
+	    while ((n = in.read(buf)) != -1) {
+		strOut.write(buf, 0, n);
+	    }
+	    String str = strOut.toString();
+	    // transform String
+	    str = transformString(str);
+	    return str;
 	}
-
-	out.close();
-	in.close();
-
-	return file;
     }
 
     /**
@@ -283,7 +280,6 @@ public class DigitoolDownloader extends Downloader {
 
     @SuppressWarnings({ "javadoc", "serial" })
     public class ParentNotFoundException extends RuntimeException {
-
 	public ParentNotFoundException() {
 
 	}
@@ -299,6 +295,5 @@ public class DigitoolDownloader extends Downloader {
 	public ParentNotFoundException(String arg0, Throwable arg1) {
 	    super(arg0, arg1);
 	}
-
     }
 }

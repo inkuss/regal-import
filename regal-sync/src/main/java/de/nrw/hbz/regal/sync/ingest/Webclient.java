@@ -105,13 +105,11 @@ public class Webclient {
     }
 
     private SSLContext initSsl(ClientConfig cc, KeystoreConf kconf) {
-	try {
+	try (FileInputStream fis = new FileInputStream(kconf.location)) {
 	    SSLContext ctx = SSLContext.getInstance("SSL");
-
 	    KeyStore trustStore;
 	    trustStore = KeyStore.getInstance("JKS");
-	    trustStore.load(new FileInputStream(kconf.location),
-		    kconf.password.toCharArray());
+	    trustStore.load(fis, kconf.password.toCharArray());
 	    TrustManagerFactory tmf = TrustManagerFactory
 		    .getInstance("SunX509");
 	    tmf.init(trustStore);
@@ -365,10 +363,11 @@ public class Webclient {
 		    + pid + "/data");
 	    logger.info(pid + " Update data: " + mimeType + " "
 		    + data.getAbsolutePath());
-	    FormDataMultiPart form = new FormDataMultiPart();
-	    FileDataBodyPart body = new FileDataBodyPart("data", data);
-	    form.bodyPart(body);
-	    resource.type(MediaType.MULTIPART_FORM_DATA_TYPE).put(form);
+	    try (FormDataMultiPart form = new FormDataMultiPart()) {
+		FileDataBodyPart body = new FileDataBodyPart("data", data);
+		form.bodyPart(body);
+		resource.type(MediaType.MULTIPART_FORM_DATA_TYPE).put(form);
+	    }
 	} catch (UniformInterfaceException e) {
 	    logger.error(pid + " " + e.getMessage(), e);
 	} catch (Exception e) {

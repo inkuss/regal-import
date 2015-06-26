@@ -139,7 +139,7 @@ public class EdowebTestSuite {
 	}
     }
 
-    public void deleteObject(String id) {
+    public void purgeObject(String id) {
 	client.deleteId(id);
     }
 
@@ -410,7 +410,7 @@ public class EdowebTestSuite {
 		logger.info("", e);
 	    }
 	}
-	deleteObject(ids[0]);
+	purgeObject(ids[0]);
 	for (String id : ids) {
 	    System.out.println("Delete " + id);
 	    Assert.assertEquals(false, readTest(namespace + ":" + id));

@@ -72,18 +72,19 @@ public class OpusMapping {
 
     private File createFile(String resourceName, String path)
 	    throws IOException {
-	InputStream in = Thread.currentThread().getContextClassLoader()
-		.getResourceAsStream(resourceName);
-	File tempFile = new File(path);
-	tempFile.deleteOnExit();
-	FileOutputStream out = null;
-	try {
-	    out = new FileOutputStream(tempFile);
-	    IOUtils.copy(in, out);
-	} finally {
-	    if (out != null)
-		out.close();
+	try (InputStream in = Thread.currentThread().getContextClassLoader()
+		.getResourceAsStream(resourceName)) {
+	    File tempFile = new File(path);
+	    tempFile.deleteOnExit();
+	    FileOutputStream out = null;
+	    try {
+		out = new FileOutputStream(tempFile);
+		IOUtils.copy(in, out);
+	    } finally {
+		if (out != null)
+		    out.close();
+	    }
+	    return tempFile;
 	}
-	return tempFile;
     }
 }
