@@ -143,6 +143,10 @@ public class EdowebTestSuite {
 	client.purgeId(id);
     }
 
+    public void deleteObject(String id) {
+	client.deleteId(id);
+    }
+
     public void urnResolving(String id) throws Exception {
 	try {
 	    logger.error("URN " + id);
@@ -159,8 +163,6 @@ public class EdowebTestSuite {
     }
 
     private void testHasParent(String parentId) throws Exception {
-	// purgeObject(parentId);
-	// createObject(parentId);
 	String pid = "test:1234567";
 	String parentPid = namespace + ":" + parentId;
 	RegalObject input = new RegalObject();
@@ -180,8 +182,15 @@ public class EdowebTestSuite {
 	Assert.assertEquals(1, size);
 
 	Assert.assertEquals(pid, pcp.get(0).get("@id"));
+
+	this.urnResolving("1234567");
+	Assert.assertEquals(true, cannotDeleteObjectTest(parentId));
 	client.purge(pid);
+	Assert.assertEquals(false, cannotDeleteObjectTest(parentId));
+
+	Assert.assertEquals(false, readTest(parentPid));
 	Assert.assertEquals(false, readTest(pid));
+
 	parent = readToMap(str2stream(client.readResource(parentPid)));
 	if (parent.containsKey("hasPart")) {
 	    List<String> parts = (List<String>) parent.get("hasPart");
@@ -422,4 +431,30 @@ public class EdowebTestSuite {
 	}
     }
 
+    private boolean cannotDeleteObjectTest(String id)
+	    throws InterruptedException {
+	try {
+	    System.out.println("Can delete " + id + "?");
+	    deleteObject(id);
+	    client.readResource("test:" + id);
+	    System.out.println("Seems not so! Object is still there");
+	    return true;
+	} catch (RuntimeException e) {
+	    return false;
+	}
+
+    }
+
+    private boolean cannotPurgeObjectTest(String id) {
+	try {
+	    System.out.println("Can purge " + id + "?");
+	    purgeObject(id);
+	    client.readResource("test:" + id);
+	    System.out.println("Seems not so! Object is still there");
+	    return true;
+	} catch (Exception e) {
+	    return false;
+	}
+
+    }
 }

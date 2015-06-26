@@ -406,7 +406,7 @@ public class Webclient {
 	try {
 	    purge(pid);
 	} catch (Exception e) {
-	    logger.info(pid + " Can't delete!" + e.getMessage(), e);
+	    logger.info(pid + " Can't purge!" + e.getMessage(), e);
 	}
     }
 
@@ -591,6 +591,23 @@ public class Webclient {
 	    return response;
 	} catch (Exception e) {
 	    throw new RuntimeException("", e);
+	}
+    }
+
+    public void delete(String pid) throws InterruptedException,
+	    ExecutionException {
+	AsyncWebResource delete = webclient.asyncResource(endpoint
+		+ "/resource/" + pid + "?purge=false");
+	String response = delete.delete(String.class).get();
+	System.out.println(response.toString());
+    }
+
+    public void deleteId(String id) {
+	String pid = namespace + ":" + id;
+	try {
+	    delete(pid);
+	} catch (Exception e) {
+	    logger.info(pid + " Can't delete!" + e.getMessage(), e);
 	}
     }
 
