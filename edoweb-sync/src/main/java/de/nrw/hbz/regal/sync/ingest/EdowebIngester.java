@@ -168,7 +168,7 @@ public class EdowebIngester implements IngestInterface {
 
     @Override
     public void delete(String p) {
-	webclient.deleteId(p);
+	webclient.purgeId(p);
 
     }
 

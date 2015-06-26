@@ -3,7 +3,7 @@
     "publishScheme": "public",
     "accessScheme": "public",
     "transformer": [
-        "oaidc"
+         "oaidc"
     ],
     "parentPid" : "test:1750717",
     "isDescribedBy":{

@@ -401,10 +401,10 @@ public class Webclient {
      * @param id
      *            A id without namespace to delete
      */
-    public void deleteId(String id) {
+    public void purgeId(String id) {
 	String pid = namespace + ":" + id;
 	try {
-	    delete(pid);
+	    purge(pid);
 	} catch (Exception e) {
 	    logger.info(pid + " Can't delete!" + e.getMessage(), e);
 	}
@@ -416,10 +416,10 @@ public class Webclient {
      * @throws ExecutionException
      * @throws InterruptedException
      */
-    public void delete(String pid) throws InterruptedException,
+    public void purge(String pid) throws InterruptedException,
 	    ExecutionException {
 	AsyncWebResource delete = webclient.asyncResource(endpoint
-		+ "/resource/" + pid);
+		+ "/resource/" + pid + "?purge=true");
 	String response = delete.delete(String.class).get();
 	System.out.println(response.toString());
     }

@@ -93,7 +93,7 @@ public class EllinetIngester extends EdowebIngester {
 
     @Override
     public void delete(String pid) {
-	webclient.deleteId(pid);
+	webclient.purgeId(pid);
     }
 
 }

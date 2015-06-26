@@ -92,7 +92,7 @@ public class OpusIngester implements IngestInterface {
 
     @Override
     public void delete(String pid) {
-	webclient.deleteId(pid.substring(pid.lastIndexOf(':') + 1));
+	webclient.purgeId(pid.substring(pid.lastIndexOf(':') + 1));
     }
 
     @Override

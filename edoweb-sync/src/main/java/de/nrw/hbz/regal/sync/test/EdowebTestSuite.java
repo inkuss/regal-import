@@ -140,7 +140,7 @@ public class EdowebTestSuite {
     }
 
     public void purgeObject(String id) {
-	client.deleteId(id);
+	client.purgeId(id);
     }
 
     public void urnResolving(String id) throws Exception {
@@ -159,6 +159,8 @@ public class EdowebTestSuite {
     }
 
     private void testHasParent(String parentId) throws Exception {
+	// purgeObject(parentId);
+	// createObject(parentId);
 	String pid = "test:1234567";
 	String parentPid = namespace + ":" + parentId;
 	RegalObject input = new RegalObject();
@@ -171,12 +173,14 @@ public class EdowebTestSuite {
 		.readResource(parentPid)));
 	String cpp = (String) child.get("parentPid");
 	Assert.assertEquals(parentPid, cpp);
+
 	List<Map> pcp = (List<Map>) parent.get("hasPart");
 	int size = pcp.size();
-	Assert.assertTrue(size == 1);
 	logger.debug(pcp.toString());
+	Assert.assertEquals(1, size);
+
 	Assert.assertEquals(pid, pcp.get(0).get("@id"));
-	client.delete(pid);
+	client.purge(pid);
 	Assert.assertEquals(false, readTest(pid));
 	parent = readToMap(str2stream(client.readResource(parentPid)));
 	if (parent.containsKey("hasPart")) {
@@ -202,7 +206,7 @@ public class EdowebTestSuite {
 	    logger.debug(child.get("title").toString());
 	    Assert.assertEquals(parent.get("title"), child.get("title"));
 	} finally {
-	    client.delete(childPid);
+	    client.purge(childPid);
 	}
     }
 
@@ -245,7 +249,7 @@ public class EdowebTestSuite {
 	pcp = (List<String>) parent.get("hasPart");
 	Assert.assertTrue(pcp == null);
 
-	client.delete(pid);
+	client.purge(pid);
 
 	Assert.assertEquals(false, readTest(pid));
 	parent = readToMap(str2stream(client.readResource(parentPid)));
@@ -255,8 +259,8 @@ public class EdowebTestSuite {
 	    Assert.assertTrue(parts.size() == size - 1);
 	}
 
-	client.delete(parentPid);
-	client.delete(grandParentPid);
+	client.purge(parentPid);
+	client.purge(grandParentPid);
     }
 
     public void testFlatten() throws Exception {
@@ -302,7 +306,7 @@ public class EdowebTestSuite {
 
 	Assert.assertEquals(parent.get("title"), child.get("title"));
 
-	client.delete(pid);
+	client.purge(pid);
 
 	Assert.assertEquals(false, readTest(pid));
 	parent = readToMap(str2stream(client.readResource(parentPid)));
@@ -312,8 +316,8 @@ public class EdowebTestSuite {
 	    Assert.assertTrue(parts.size() == size - 1);
 	}
 
-	client.delete(parentPid);
-	client.delete(grandParentPid);
+	client.purge(parentPid);
+	client.purge(grandParentPid);
     }
 
     public void testFlattenAll() throws Exception {
@@ -359,7 +363,7 @@ public class EdowebTestSuite {
 
 	Assert.assertEquals(parent.get("title"), child.get("title"));
 
-	client.delete(pid);
+	client.purge(pid);
 
 	Assert.assertEquals(false, readTest(pid));
 	parent = readToMap(str2stream(client.readResource(parentPid)));
@@ -369,8 +373,8 @@ public class EdowebTestSuite {
 	    Assert.assertTrue(parts.size() == size - 1);
 	}
 
-	client.delete(parentPid);
-	client.delete(grandParentPid);
+	client.purge(parentPid);
+	client.purge(grandParentPid);
     }
 
     public boolean readTest(String pid) {
@@ -410,8 +414,9 @@ public class EdowebTestSuite {
 		logger.info("", e);
 	    }
 	}
-	purgeObject(ids[0]);
+
 	for (String id : ids) {
+	    purgeObject(id);
 	    System.out.println("Delete " + id);
 	    Assert.assertEquals(false, readTest(namespace + ":" + id));
 	}
