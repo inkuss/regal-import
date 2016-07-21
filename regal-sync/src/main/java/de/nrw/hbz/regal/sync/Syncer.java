@@ -226,6 +226,8 @@ public class Syncer {
 	    init(set);
 	} else if (mode.compareTo("SYNC") == 0) {
 	    sync(set);
+	} else if (mode.compareTo("DWNL") == 0) {
+		dwnl(set);
 	} else if (mode.compareTo("CONT") == 0) {
 	    cont(set);
 	} else if (mode.compareTo("UPDT") == 0) {
@@ -322,6 +324,30 @@ public class Syncer {
 	    }
 	}
 
+    }
+    
+    /*
+     * +
+     * "DWNL: Harvests all Websites from timestamp till now to cache\n"
+     */
+    void dwnl(String sets) {
+    	boolean harvestFromScratch = false;
+    	boolean forceDownload = true;
+    	
+    	List<String> pids = harvester.harvest(sets, harvestFromScratch, new DigitoolPidStrategy(), "oai_dc");
+    	logger.info("Verarbeite " + pids.size() + " Dateneinheiten.");
+    	
+    	int size = pids.size();
+    	for(int i = 0; i < size; i++) {
+    		try {
+    			logger.info((i+1)+"/"+size);
+    			String pid = pids.get(i);
+    			String baseDir = downloader.download(pid, forceDownload);
+    			logger.info("Download "+pid+"to "+baseDir);
+    		} catch (Exception e) {
+    			logger.error(e.toString(), e);
+    		}
+    	}
     }
 
     /*
