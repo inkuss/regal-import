@@ -15,6 +15,16 @@
  */
 package de.nrw.hbz.regal.sync.ingest;
 
+import java.io.*;
+import javax.json.Json;
+import javax.json.stream.JsonGenerator;
+import javax.json.stream.JsonGeneratorFactory;
+import java.util.Map;
+import java.util.HashMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This class is a collection of properties of a website version. These
  * properties will be relevant when importing the website version into the
@@ -23,6 +33,9 @@ package de.nrw.hbz.regal.sync.ingest;
  * 
  * The property names (field names) correspond to the field names of the Fedora
  * and Regal Objects as far as possible.
+ * 
+ * This class contains a print()-method which writes its entire contents to a
+ * file. The format of the file is JSON.
  * 
  * @author I. Kuss, kuss@hbz-nrw.de
  */
@@ -34,7 +47,11 @@ class WebsiteVersionMetadata {
 	private String accessScheme = null;
 	private String catalogId = null;
 	private String contentType = null;
+	private String parentPid = null;
+	private String publishScheme = null;
+	private String title = null;
 	private String localDir = null;
+	final static Logger logger = LoggerFactory.getLogger(WebsiteVersionMetadata.class);
 
 	/**
 	 * Der Konstruktor
@@ -84,6 +101,30 @@ class WebsiteVersionMetadata {
 		return this.catalogId;
 	}
 
+	public void setParentPid(String parentPid) {
+		this.parentPid = parentPid;
+	}
+
+	public String getParentPid() {
+		return this.parentPid;
+	}
+
+	public void setPublishScheme(String publishScheme) {
+		this.publishScheme = publishScheme;
+	}
+
+	public String getPublishScheme() {
+		return this.publishScheme;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getTitle() {
+		return this.title;
+	}
+
 	public void setLocalDir(String localDir) {
 		this.localDir = localDir;
 	}
@@ -91,6 +132,64 @@ class WebsiteVersionMetadata {
 	public String getLocalDir() {
 		return this.localDir;
 	}
+
+	/*
+	 * Diese Methode gibt den gesamten Inhalt der Klasse in eine Datei aus.
+	 * Ausgabe im Format JSON.
+	 */
+	public void print(File dir, File file) {
+		OutputStream fos = null;
+		JsonGenerator jsonGenerator = null;
+		try {
+			fos = new FileOutputStream(dir.getAbsolutePath().concat("/")
+					.concat(file.getName().replaceAll(".xml$", "").concat(".website.json")));
+			Map<String, Object> properties = new HashMap<String, Object>(1);
+			properties.put(JsonGenerator.PRETTY_PRINTING, true);
+			JsonGeneratorFactory jgf = Json.createGeneratorFactory(properties);
+			jsonGenerator = jgf.createGenerator(fos);
+			jsonGenerator.writeStartObject();
+			jsonGenerator.write("accessScheme", this.getAccessScheme());
+			jsonGenerator.write("catalogId", this.getCatalogId());
+			jsonGenerator.write("contentType", this.getContentType());
+			jsonGenerator.writeStartObject("hasData");
+			jsonGenerator.write("format", this.getHasData().getFormat());
+			jsonGenerator.write("fileLabel", this.getHasData().getFileLabel());
+			jsonGenerator.write("size", this.getHasData().getSize());
+			jsonGenerator.writeEnd();
+			jsonGenerator.writeStartObject("isDescribedBy");
+			jsonGenerator.write("inputFrom", this.getIsDescribedBy().getInputFrom());
+			jsonGenerator.write("created", this.getIsDescribedBy().getCreated());
+			jsonGenerator.write("modified", this.getIsDescribedBy().getModified());
+			jsonGenerator.write("createdBy", this.getIsDescribedBy().getCreatedBy());
+			jsonGenerator.write("objectTimestamp", this.getIsDescribedBy().getObjectTimestamp());
+			jsonGenerator.writeEnd();
+			jsonGenerator.write("parentPid", this.getParentPid());
+			jsonGenerator.write("publishScheme", this.getPublishScheme());
+			jsonGenerator.write("title", this.getTitle());
+			jsonGenerator.write("localDir", this.getLocalDir());
+			jsonGenerator.writeStartObject("edo2Data");
+			jsonGenerator.write("pid", this.getEdo2Data().getPid());
+			jsonGenerator.write("label", this.getEdo2Data().getLabel());
+			jsonGenerator.write("usageType", this.getEdo2Data().getUsageType());
+			jsonGenerator.write("entityType", this.getEdo2Data().getEntityType());
+			jsonGenerator.write("parentPid", this.getEdo2Data().getParentPid());
+			jsonGenerator.write("ingestId", this.getEdo2Data().getIngestId());
+			jsonGenerator.write("urlId", this.getEdo2Data().getUrlId());
+			jsonGenerator.writeEnd();
+			jsonGenerator.writeEnd();
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			e.printStackTrace(System.err);
+		} finally {
+			try {
+				jsonGenerator.close();
+				fos.close();
+			} catch (Exception e) {
+				logger.error(e.getMessage());
+				e.printStackTrace(System.err);
+			}
+		}
+	} // end of method print
 
 	/*
 	 * Inline-Klassen Diese Entsprechen Blöcken in der json-Representation der
@@ -142,6 +241,8 @@ class WebsiteVersionMetadata {
 		private String inputFrom = null; /* die URL */
 		private String created = null;
 		private String modified = null;
+		private String createdBy = null;
+		private String objectTimestamp = null;
 
 		private IsDescribedBy() {
 			// leerer Konstruktor
@@ -171,6 +272,22 @@ class WebsiteVersionMetadata {
 			return this.modified;
 		}
 
+		public void setCreatedBy(String createdBy) {
+			this.createdBy = createdBy;
+		}
+
+		public String getCreatedBy() {
+			return this.createdBy;
+		}
+
+		public void setObjectTimestamp(String objectTimestamp) {
+			this.objectTimestamp = objectTimestamp;
+		}
+
+		public String getObjectTimestamp() {
+			return this.objectTimestamp;
+		}
+
 	} // end of inline class IsDescribedBy
 
 	/*
@@ -185,6 +302,7 @@ class WebsiteVersionMetadata {
 		private String ingestId = null;
 		private String entityType = null;
 		private String usageType = null;
+		private String parentPid = null;
 		private String urlId = null;
 
 		private Edo2Data() {
@@ -231,6 +349,14 @@ class WebsiteVersionMetadata {
 
 		public String getUsageType() {
 			return this.usageType;
+		}
+
+		public void setParentPid(String parentPid) {
+			this.parentPid = parentPid;
+		}
+
+		public String getParentPid() {
+			return this.parentPid;
 		}
 
 		public void setUrlId(String urlId) {

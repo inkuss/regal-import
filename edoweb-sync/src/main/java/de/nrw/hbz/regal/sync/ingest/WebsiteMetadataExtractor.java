@@ -116,7 +116,7 @@ class WebsiteMetadataExtractor {
 				if (!dir.isDirectory()) {
 					continue;
 				}
-				logger.info("found Verzeichnis: " + dir.getName());
+				logger.info("Öffne Verzeichnis: " + dir.getName());
 				// Durchsuche das Verzeichnis zuerst nach MARC-Metadaden (es
 				// muss welche geben)
 				wsmmd = new WebsiteMarcMetadata();
@@ -147,7 +147,7 @@ class WebsiteMetadataExtractor {
 						continue;
 					}
 					logger.info("found XML-Datei: " + file.getName());
-					if (parseDigitalEntity(file) == true) {
+					if (parseDigitalEntity(dir, file) == true) {
 
 						/*
 						 * Anreicherung der bisher nach WebsiteVersionMetadata
@@ -165,7 +165,7 @@ class WebsiteMetadataExtractor {
 						 * eine Datei vom Format .json. Die .json-Datei liegt
 						 * neben der soeben geparsten XML-Datei.
 						 */
-						// wsvmd.print()
+						wsvmd.print(dir, file);
 
 					}
 				} // next file
@@ -183,7 +183,7 @@ class WebsiteMetadataExtractor {
 	 * hinterlegt. Falls eine Digitale Entität vom Type "WEBARCHIVE VIEW*"
 	 * erfolgreich eingelesen wurde, wird "true" zurück gegeben, sonst "false".
 	 */
-	private static boolean parseDigitalEntity(File file) {
+	private static boolean parseDigitalEntity(File dir, File file) {
 		try {
 			Document doc = builder.parse(file);
 			Element root = doc.getDocumentElement();
@@ -193,6 +193,7 @@ class WebsiteMetadataExtractor {
 				return false;
 			}
 			wsvmd = new WebsiteVersionMetadata();
+			wsvmd.getEdo2Data().setParentPid(dir.getName());
 			wsvmd.getEdo2Data().setPid(root.getElementsByTagName("pid").item(0).getTextContent());
 			logger.info("Pid=" + wsvmd.getEdo2Data().getPid());
 			Element control = (Element) root.getElementsByTagName("control").item(0);
@@ -221,13 +222,19 @@ class WebsiteMetadataExtractor {
 			logger.info("INGEST_ID=" + ingestId);
 			wsvmd.getEdo2Data().setIngestId(ingestId);
 			wsvmd.getIsDescribedBy().setCreated(control.getElementsByTagName("creation_date").item(0).getTextContent());
+			logger.info("creation_date=" + wsvmd.getIsDescribedBy().getCreated());
 			wsvmd.getIsDescribedBy()
 					.setModified(control.getElementsByTagName("modification_date").item(0).getTextContent());
+			logger.info("modification_date=" + wsvmd.getIsDescribedBy().getModified());
 			Element streamRef = (Element) root.getElementsByTagName("stream_ref").item(0);
-			wsvmd.setLocalDir(file.getName().replaceAll(".xml$", "").concat("/")
+			wsvmd.setLocalDir(edowebbase.replaceAll("/$", "").concat("/").concat(dir.getName()).concat("/")
+					.concat(file.getName().replaceAll(".xml$", "")).concat("/")
 					.concat(streamRef.getElementsByTagName("file_name").item(0).getTextContent()));
+			logger.info("localDir=" + wsvmd.getLocalDir());
 			wsvmd.getHasData().setFormat(streamRef.getElementsByTagName("mime_type").item(0).getTextContent());
+			logger.info("mime_type=" + wsvmd.getHasData().getFormat());
 			wsvmd.getHasData().setSize(streamRef.getElementsByTagName("file_size_bytes").item(0).getTextContent());
+			logger.info("file_size_bytes=" + wsvmd.getHasData().getSize());
 			return true;
 		} catch (Exception e) {
 			logger.error(e.getMessage());
@@ -295,12 +302,13 @@ class WebsiteMetadataExtractor {
 				Element controlfield = (Element) controlfields.item(i);
 				if (controlfield.getAttribute("tag").equals("001")) {
 					wsmmd.setHbzId(controlfields.item(i).getTextContent());
+					logger.info("hbz-ID: " + wsmmd.getHbzId());
 				} else if (controlfield.getAttribute("tag").equals("008")) {
 					wsmmd.setDateEntered(
 							String.format("20%2s-%2s-%2s", controlfields.item(i).getTextContent().substring(0, 2),
 									controlfields.item(i).getTextContent().substring(2, 4),
 									controlfields.item(i).getTextContent().substring(4, 6)));
-					logger.info("Erstelldatum: "+wsmmd.getDateEntered());
+					logger.info("Erstelldatum: " + wsmmd.getDateEntered());
 				}
 			}
 			// 2. Lies Datenfelder
@@ -321,7 +329,7 @@ class WebsiteMetadataExtractor {
 						} else if (url.matches("^.*www.edoweb-rlp.de/resource/edoweb.*$")) {
 							// Edoweb3-ID gefunden
 							wsmmd.setParentPid(parseEdo3Url(url));
-							logger.info("Edoweb3-ID: "+wsmmd.getParentPid());
+							logger.info("Edoweb3-ID: " + wsmmd.getParentPid());
 						} else {
 							/*
 							 * Falls man bis hier durchkommt, wird angenommen,
@@ -330,7 +338,7 @@ class WebsiteMetadataExtractor {
 							 * Internetadresse der Website.
 							 */
 							wsmmd.setUrl(url);
-							logger.info("URL: "+url);
+							logger.info("URL: " + url);
 						}
 					}
 				} else if (datafield.getAttribute("tag").equals("998")) {
@@ -341,7 +349,7 @@ class WebsiteMetadataExtractor {
 							continue;
 						}
 						wsmmd.setUrlId(parseUrlId(subfields.item(j).getTextContent()));
-						logger.info("URL_ID: "+wsmmd.getUrlId());
+						logger.info("URL_ID: " + wsmmd.getUrlId());
 					}
 				}
 			}
@@ -373,7 +381,7 @@ class WebsiteMetadataExtractor {
 		pattern = Pattern.compile("^.*www.edoweb-rlp.de/resource/(edoweb%3A[0-9]+).*$");
 		matcher = pattern.matcher(edo3Url);
 		if (matcher.matches()) {
-			return matcher.group(1).replaceAll("%3A",":");
+			return matcher.group(1).replaceAll("%3A", ":");
 		}
 		return (String) null;
 	}
@@ -410,12 +418,12 @@ class WebsiteMetadataExtractor {
 			// will "fileLabel" für Edo3 generieren.
 			// 1. Versuch: aus <control><label>
 			String label = wsvmd.getEdo2Data().getLabel();
-			Pattern pattern = Pattern.compile("^(%2d)\\.(%2d)\\.(%4d).(%2d):(%2d):(%2d)$");
+			Pattern pattern = Pattern.compile("^(\\d+)\\.(\\d+)\\.(\\d+) (\\d+):(\\d+):(\\d+)$");
 			Matcher matcher = pattern.matcher(label);
 			if (matcher.matches()) {
-				String tag = matcher.group(1);
-				String monat = matcher.group(2);
-				String jahr = matcher.group(3);
+				int tag = Integer.parseInt(matcher.group(1));
+				int monat = Integer.parseInt(matcher.group(2));
+				int jahr = Integer.parseInt(matcher.group(3));
 				wsvmd.getHasData().setFileLabel(String.format("%4d-%02d-%02d", jahr, monat, tag));
 			} else if (wsmmd.getDateEntered() != null) {
 				// 2. Versuch: aus MARC 008
@@ -424,10 +432,12 @@ class WebsiteMetadataExtractor {
 				// letzter Versuch: aus <control><creation_date>
 				wsvmd.getHasData().setFileLabel(wsvmd.getIsDescribedBy().getCreated().substring(0, 10));
 			}
-			
-			// Ermittlung der URL_ID (brauche ich als Hauptschlüssel zu meiner Konkordanz)
+			logger.info("fileLabel: " + wsvmd.getHasData().getFileLabel());
+
+			// Ermittlung der URL_ID (brauche ich als Hauptschlüssel zu meiner
+			// Konkordanz)
 			// 1. Versuch: aus MARC 998 $$a
-			if( wsmmd.getUrlId() != null ) {
+			if (wsmmd.getUrlId() != null) {
 				wsvmd.getEdo2Data().setUrlId(wsmmd.getUrlId());
 			} else {
 				// 2. Versuch: aus <control><ingest_id>
@@ -440,11 +450,11 @@ class WebsiteMetadataExtractor {
 				} else {
 					// 3. Versuch: aus der Konkordanz über HTNr
 					for (HashMap<String, String> lineHash : wsk.getUrlIdHash().values()) {
-					    if( lineHash.get("HBZID").equals(wsvmd.getCatalogId()) ) {
-					    	wsvmd.getEdo2Data().setUrlId(lineHash.get("URL_ID"));
-					    	logger.info("URL_ID= "+lineHash.get("URL_ID"));
-					    	break;
-					    }
+						if (lineHash.get("HBZID").equals(wsvmd.getCatalogId())) {
+							wsvmd.getEdo2Data().setUrlId(lineHash.get("URL_ID"));
+							logger.info("URL_ID= " + lineHash.get("URL_ID"));
+							break;
+						}
 					}
 				}
 			}
@@ -452,24 +462,61 @@ class WebsiteMetadataExtractor {
 			// Ermittlung der URL
 			// 1. Versuch: aus meiner Konkordanz über URL_ID
 			String urlId = wsvmd.getEdo2Data().getUrlId();
-			if( urlId != null && wsk.getUrlIdHash().containsKey(urlId) ) {
+			if (urlId != null && wsk.getUrlIdHash().containsKey(urlId)) {
 				wsvmd.getIsDescribedBy().setInputFrom(wsk.getUrlIdHash().get(urlId).get("URL"));
-				logger.info("URL aus Konkordanz genommen: "+wsk.getUrlIdHash().get(urlId).get("URL"));
+				logger.info("URL aus Konkordanz genommen: " + wsk.getUrlIdHash().get(urlId).get("URL"));
 			} else if (wsmmd.getUrl() != null) {
 				// 2. Versuch: aus MARC 8564 $$u
 				wsvmd.getIsDescribedBy().setInputFrom(wsmmd.getUrl());
 			} else {
 				// 3. Versuch: aus der Konkordanz über HTNr
 				for (HashMap<String, String> lineHash : wsk.getUrlIdHash().values()) {
-				    if( lineHash.get("HBZID").equals(wsvmd.getCatalogId()) ) {
-				    	wsvmd.getIsDescribedBy().setInputFrom(lineHash.get("URL"));
-				    	logger.info("URL aus Konkordanz über HTNr : "+lineHash.get("URL"));
-				    	break;
-				    }
+					if (lineHash.get("HBZID").equals(wsvmd.getCatalogId())) {
+						wsvmd.getIsDescribedBy().setInputFrom(lineHash.get("URL"));
+						logger.info("URL aus Konkordanz über HTNr : " + lineHash.get("URL"));
+						break;
+					}
 				}
 			}
-			
-			// hier weiter KS20160726
+
+			wsvmd.getIsDescribedBy().setCreatedBy("webgatherer"); // fester Wert
+			// Object-Zeitstempel generieren
+			// 1. Versuch: aus <control><label>
+
+			pattern = Pattern.compile("^(\\d+)\\.(\\d+)\\.(\\d+).(\\d+):(\\d+):(\\d+)$");
+			matcher = pattern.matcher(wsvmd.getEdo2Data().getLabel());
+			if (matcher.matches()) {
+				int tag = Integer.parseInt(matcher.group(1));
+				int monat = Integer.parseInt(matcher.group(2));
+				int jahr = Integer.parseInt(matcher.group(3));
+				int stunde = Integer.parseInt(matcher.group(4));
+				int minute = Integer.parseInt(matcher.group(5));
+				int sekunde = Integer.parseInt(matcher.group(6));
+				wsvmd.getIsDescribedBy().setObjectTimestamp(
+						String.format("%4d-%02d-%02d %02d:%02d:%02d", jahr, monat, tag, stunde, minute, sekunde));
+			} else if (wsmmd.getDateEntered() != null) {
+				// 2. Versuch: aus MARC 008 (nur Datum)
+				wsvmd.getIsDescribedBy().setObjectTimestamp(wsmmd.getDateEntered());
+			} else {
+				// letzter Versuch: aus <control><creation_date>
+				wsvmd.getIsDescribedBy().setObjectTimestamp(wsvmd.getIsDescribedBy().getCreated());
+			}
+			logger.info("objectTimestamp: " + wsvmd.getIsDescribedBy().getObjectTimestamp());
+
+			// Hole Edo3-ID ("parentPid") - falls vorhanden
+			// 1. Versuch: aus MARC 8564 $$u
+			if (wsmmd.getParentPid() != null) {
+				wsvmd.setParentPid(wsmmd.getParentPid());
+			} else {
+				// 2. Versuch: aus meiner Konkordanz über URL_ID
+				urlId = wsvmd.getEdo2Data().getUrlId();
+				if (urlId != null && wsk.getUrlIdHash().containsKey(urlId)) {
+					wsvmd.setParentPid(wsk.getUrlIdHash().get(urlId).get("EDOWEB3_ID"));
+					logger.info("EDO3_ID aus Konkordanz genommen: " + wsvmd.getParentPid());
+				}
+			}
+			wsvmd.setPublishScheme("fix");
+			wsvmd.setTitle(wsvmd.getHasData().getFileLabel());
 
 		} catch (Exception e) {
 			logger.error(e.getMessage());
