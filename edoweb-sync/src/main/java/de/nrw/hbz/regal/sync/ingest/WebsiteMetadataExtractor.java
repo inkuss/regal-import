@@ -425,12 +425,22 @@ class WebsiteMetadataExtractor {
 				int monat = Integer.parseInt(matcher.group(2));
 				int jahr = Integer.parseInt(matcher.group(3));
 				wsvmd.getHasData().setFileLabel(String.format("%4d-%02d-%02d", jahr, monat, tag));
-			} else if (wsmmd.getDateEntered() != null) {
-				// 2. Versuch: aus MARC 008
-				wsvmd.getHasData().setFileLabel(wsmmd.getDateEntered());
 			} else {
-				// letzter Versuch: aus <control><creation_date>
-				wsvmd.getHasData().setFileLabel(wsvmd.getIsDescribedBy().getCreated().substring(0, 10));
+				// 2. Versuch: aus <control><ingest_id>
+				pattern = Pattern.compile("^rlb01_url_([0-9]+)_ws_[jnp]_(\\d\\d\\d\\d)(\\d\\d)(\\d\\d)[0-9]+$");
+				matcher = pattern.matcher(wsvmd.getEdo2Data().getIngestId());
+				if (matcher.matches()) {
+					int jahr = Integer.parseInt(matcher.group(2));
+					int monat = Integer.parseInt(matcher.group(3));
+					int tag = Integer.parseInt(matcher.group(4));
+					wsvmd.getHasData().setFileLabel(String.format("%4d-%02d-%02d", jahr, monat, tag));
+				} else if (wsmmd.getDateEntered() != null) {
+					// 3. Versuch: aus MARC 008
+					wsvmd.getHasData().setFileLabel(wsmmd.getDateEntered());
+				} else {
+					// letzter Versuch: aus <control><creation_date>
+					wsvmd.getHasData().setFileLabel(wsvmd.getIsDescribedBy().getCreated().substring(0, 10));
+				}
 			}
 			logger.info("fileLabel: " + wsvmd.getHasData().getFileLabel());
 
@@ -482,7 +492,6 @@ class WebsiteMetadataExtractor {
 			wsvmd.getIsDescribedBy().setCreatedBy("webgatherer"); // fester Wert
 			// Object-Zeitstempel generieren
 			// 1. Versuch: aus <control><label>
-
 			pattern = Pattern.compile("^(\\d+)\\.(\\d+)\\.(\\d+).(\\d+):(\\d+):(\\d+)$");
 			matcher = pattern.matcher(wsvmd.getEdo2Data().getLabel());
 			if (matcher.matches()) {
@@ -494,12 +503,27 @@ class WebsiteMetadataExtractor {
 				int sekunde = Integer.parseInt(matcher.group(6));
 				wsvmd.getIsDescribedBy().setObjectTimestamp(
 						String.format("%4d-%02d-%02d %02d:%02d:%02d", jahr, monat, tag, stunde, minute, sekunde));
-			} else if (wsmmd.getDateEntered() != null) {
-				// 2. Versuch: aus MARC 008 (nur Datum)
-				wsvmd.getIsDescribedBy().setObjectTimestamp(wsmmd.getDateEntered());
 			} else {
-				// letzter Versuch: aus <control><creation_date>
-				wsvmd.getIsDescribedBy().setObjectTimestamp(wsvmd.getIsDescribedBy().getCreated());
+				// 2. Versuch: aus <control><ingest_id>
+				pattern = Pattern.compile(
+						"^rlb01_url_([0-9]+)_ws_[jnp]_(\\d\\d\\d\\d)(\\d\\d)(\\d\\d)(\\d\\d)(\\d\\d)(\\d\\d)[0-9]*$");
+				matcher = pattern.matcher(wsvmd.getEdo2Data().getIngestId());
+				if (matcher.matches()) {
+					int jahr = Integer.parseInt(matcher.group(2));
+					int monat = Integer.parseInt(matcher.group(3));
+					int tag = Integer.parseInt(matcher.group(4));
+					int stunde = Integer.parseInt(matcher.group(5));
+					int minute = Integer.parseInt(matcher.group(6));
+					int sekunde = Integer.parseInt(matcher.group(7));
+					wsvmd.getIsDescribedBy().setObjectTimestamp(
+							String.format("%4d-%02d-%02d %02d:%02d:%02d", jahr, monat, tag, stunde, minute, sekunde));
+				} else if (wsmmd.getDateEntered() != null) {
+					// 3. Versuch: aus MARC 008 (nur Datum)
+					wsvmd.getIsDescribedBy().setObjectTimestamp(wsmmd.getDateEntered());
+				} else {
+					// letzter Versuch: aus <control><creation_date>
+					wsvmd.getIsDescribedBy().setObjectTimestamp(wsvmd.getIsDescribedBy().getCreated());
+				}
 			}
 			logger.info("objectTimestamp: " + wsvmd.getIsDescribedBy().getObjectTimestamp());
 
