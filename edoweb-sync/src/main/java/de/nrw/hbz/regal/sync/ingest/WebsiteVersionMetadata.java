@@ -51,6 +51,8 @@ class WebsiteVersionMetadata {
 	private String publishScheme = null;
 	private String title = null;
 	private String localDir = null;
+
+	JsonGenerator jsonGenerator = null;
 	final static Logger logger = LoggerFactory.getLogger(WebsiteVersionMetadata.class);
 
 	/**
@@ -139,7 +141,6 @@ class WebsiteVersionMetadata {
 	 */
 	public void print(File dir, File file) {
 		OutputStream fos = null;
-		JsonGenerator jsonGenerator = null;
 		try {
 			fos = new FileOutputStream(dir.getAbsolutePath().concat("/")
 					.concat(file.getName().replaceAll(".xml$", "").concat(".website.json")));
@@ -148,33 +149,33 @@ class WebsiteVersionMetadata {
 			JsonGeneratorFactory jgf = Json.createGeneratorFactory(properties);
 			jsonGenerator = jgf.createGenerator(fos);
 			jsonGenerator.writeStartObject();
-			jsonGenerator.write("accessScheme", this.getAccessScheme());
-			jsonGenerator.write("catalogId", this.getCatalogId());
-			jsonGenerator.write("contentType", this.getContentType());
+			jsonGeneratorWriteFieldChkNull("accessScheme", this.getAccessScheme());
+			jsonGeneratorWriteFieldChkNull("catalogId", this.getCatalogId());
+			jsonGeneratorWriteFieldChkNull("contentType", this.getContentType());
 			jsonGenerator.writeStartObject("hasData");
-			jsonGenerator.write("format", this.getHasData().getFormat());
-			jsonGenerator.write("fileLabel", this.getHasData().getFileLabel());
-			jsonGenerator.write("size", this.getHasData().getSize());
+			jsonGeneratorWriteFieldChkNull("format", this.getHasData().getFormat());
+			jsonGeneratorWriteFieldChkNull("fileLabel", this.getHasData().getFileLabel());
+			jsonGeneratorWriteFieldChkNull("size", this.getHasData().getSize());
 			jsonGenerator.writeEnd();
 			jsonGenerator.writeStartObject("isDescribedBy");
-			jsonGenerator.write("inputFrom", this.getIsDescribedBy().getInputFrom());
-			jsonGenerator.write("created", this.getIsDescribedBy().getCreated());
-			jsonGenerator.write("modified", this.getIsDescribedBy().getModified());
-			jsonGenerator.write("createdBy", this.getIsDescribedBy().getCreatedBy());
-			jsonGenerator.write("objectTimestamp", this.getIsDescribedBy().getObjectTimestamp());
+			jsonGeneratorWriteFieldChkNull("inputFrom", this.getIsDescribedBy().getInputFrom());
+			jsonGeneratorWriteFieldChkNull("created", this.getIsDescribedBy().getCreated());
+			jsonGeneratorWriteFieldChkNull("modified", this.getIsDescribedBy().getModified());
+			jsonGeneratorWriteFieldChkNull("createdBy", this.getIsDescribedBy().getCreatedBy());
+			jsonGeneratorWriteFieldChkNull("objectTimestamp", this.getIsDescribedBy().getObjectTimestamp());
 			jsonGenerator.writeEnd();
-			jsonGenerator.write("parentPid", this.getParentPid());
-			jsonGenerator.write("publishScheme", this.getPublishScheme());
-			jsonGenerator.write("title", this.getTitle());
-			jsonGenerator.write("localDir", this.getLocalDir());
+			jsonGeneratorWriteFieldChkNull("parentPid", this.getParentPid());
+			jsonGeneratorWriteFieldChkNull("publishScheme", this.getPublishScheme());
+			jsonGeneratorWriteFieldChkNull("title", this.getTitle());
+			jsonGeneratorWriteFieldChkNull("localDir", this.getLocalDir());
 			jsonGenerator.writeStartObject("edo2Data");
-			jsonGenerator.write("pid", this.getEdo2Data().getPid());
-			jsonGenerator.write("label", this.getEdo2Data().getLabel());
-			jsonGenerator.write("usageType", this.getEdo2Data().getUsageType());
-			jsonGenerator.write("entityType", this.getEdo2Data().getEntityType());
-			jsonGenerator.write("parentPid", this.getEdo2Data().getParentPid());
-			jsonGenerator.write("ingestId", this.getEdo2Data().getIngestId());
-			jsonGenerator.write("urlId", this.getEdo2Data().getUrlId());
+			jsonGeneratorWriteFieldChkNull("pid", this.getEdo2Data().getPid());
+			jsonGeneratorWriteFieldChkNull("label", this.getEdo2Data().getLabel());
+			jsonGeneratorWriteFieldChkNull("usageType", this.getEdo2Data().getUsageType());
+			jsonGeneratorWriteFieldChkNull("entityType", this.getEdo2Data().getEntityType());
+			jsonGeneratorWriteFieldChkNull("parentPid", this.getEdo2Data().getParentPid());
+			jsonGeneratorWriteFieldChkNull("ingestId", this.getEdo2Data().getIngestId());
+			jsonGeneratorWriteFieldChkNull("urlId", this.getEdo2Data().getUrlId());
 			jsonGenerator.writeEnd();
 			jsonGenerator.writeEnd();
 		} catch (Exception e) {
@@ -190,6 +191,17 @@ class WebsiteVersionMetadata {
 			}
 		}
 	} // end of method print
+
+	private void jsonGeneratorWriteFieldChkNull(String fieldName, String fieldValue) {
+		try {
+			if (fieldValue != null) {
+				jsonGenerator.write(fieldName, fieldValue);
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			e.printStackTrace(System.err);
+		}
+	}
 
 	/*
 	 * Inline-Klassen Diese Entsprechen Blöcken in der json-Representation der
