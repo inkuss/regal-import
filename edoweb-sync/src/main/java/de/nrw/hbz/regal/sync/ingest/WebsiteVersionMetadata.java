@@ -17,6 +17,8 @@ package de.nrw.hbz.regal.sync.ingest;
 
 import java.io.*;
 import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 import javax.json.stream.JsonGenerator;
 import javax.json.stream.JsonGeneratorFactory;
 import java.util.Map;
@@ -52,16 +54,73 @@ class WebsiteVersionMetadata {
 	private String title = null;
 	private String localDir = null;
 
-	JsonGenerator jsonGenerator = null;
+	private File source = null;
+	private JsonGenerator jsonGenerator = null;
 	final static Logger logger = LoggerFactory.getLogger(WebsiteVersionMetadata.class);
 
 	/**
-	 * Der Konstruktor
+	 * Der Konstruktor ohne Argumente
 	 */
 	public WebsiteVersionMetadata() {
 		this.hasData = new HasData();
 		this.isDescribedBy = new IsDescribedBy();
 		this.edo2Data = new Edo2Data();
+	}
+
+	/**
+	 * Der Konstruktor mit einer Datei als Argument.
+	 */
+	public WebsiteVersionMetadata(File file) {
+		this.hasData = new HasData();
+		this.isDescribedBy = new IsDescribedBy();
+		this.edo2Data = new Edo2Data();
+		this.source = file;
+	}
+
+	/*
+	 * Liest den Inhalt der Datei source ein als Inhalt der aktuellen Instanz
+	 * ein. Schmeißt im Fehlerfalle eine Ausnahme (z.B. falls Dateiinhalt nicht
+	 * im Format "WebsiteVersionMetadata").
+	 */
+	public void read() throws Exception {
+		InputStream is = null;
+		JsonReader reader = null;
+		try {
+			is = new FileInputStream(source);
+			reader = Json.createReader(is);
+			JsonObject json = reader.readObject();
+			// logger.info("catalogId=" + json.getString("catalogId"));
+			JsonObject jsonHasData = json.getJsonObject("hasData");
+			hasData.setFormat(jsonHasData.getString("format", (String) null));
+			hasData.setFileLabel(jsonHasData.getString("fileLabel", (String) null));
+			hasData.setSize(jsonHasData.getString("size", (String) null));
+			JsonObject jsonIsDescribedBy = json.getJsonObject("isDescribedBy");
+			isDescribedBy.setInputFrom(jsonIsDescribedBy.getString("inputFrom", (String) null));
+			isDescribedBy.setCreated(jsonIsDescribedBy.getString("created", (String) null));
+			isDescribedBy.setModified(jsonIsDescribedBy.getString("modified", (String) null));
+			isDescribedBy.setCreatedBy(jsonIsDescribedBy.getString("createdBy", (String) null));
+			isDescribedBy.setObjectTimestamp(jsonIsDescribedBy.getString("objectTimestamp", (String) null));
+			JsonObject jsonEdo2Data = json.getJsonObject("edo2Data");
+			edo2Data.setPid(jsonEdo2Data.getString("pid", (String) null));
+			edo2Data.setLabel(jsonEdo2Data.getString("label", (String) null));
+			edo2Data.setIngestId(jsonEdo2Data.getString("ingestId", (String) null));
+			edo2Data.setEntityType(jsonEdo2Data.getString("entityType", (String) null));
+			edo2Data.setUsageType(jsonEdo2Data.getString("usageType", (String) null));
+			edo2Data.setParentPid(jsonEdo2Data.getString("parentPid", (String) null));
+			edo2Data.setUrlId(jsonEdo2Data.getString("urlId", (String) null));
+			accessScheme = json.getString("accessScheme", (String) null);
+			catalogId = json.getString("catalogId", (String) null);
+			contentType = json.getString("contentType", (String) null);
+			parentPid = json.getString("parentPid", (String) null);
+			publishScheme = json.getString("publishScheme", (String) null);
+			title = json.getString("title", (String) null);
+			localDir = json.getString("localDir", (String) null);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			reader.close();
+			is.close();
+		}
 	}
 
 	/*
